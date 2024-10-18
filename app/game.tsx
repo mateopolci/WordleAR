@@ -5,7 +5,7 @@ import { Stack, useRouter } from "expo-router";
 import OnScreenKeyboard from "@/components/OnScreenKeyboard";
 import { Ionicons } from "@expo/vector-icons";
 
-//Debug (BORRAR)
+//Debug
 const ROWS = 6;
 
 const game = () => {
@@ -16,7 +16,7 @@ const game = () => {
     const router = useRouter();
 
     const [rows, setRows] = useState<string[][]>(
-        new Array(ROWS).fill(new Array(5).fill("a")),
+        new Array(ROWS).fill(new Array(5).fill('')),
     );
     const [curRow, setCurRow] = useState(0);
     const [curCol, setCurCol] = useState(0);
