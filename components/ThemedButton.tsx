@@ -25,7 +25,6 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
     const backgroundColor = Colors[colorScheme ?? "light"].buttonBg;
     const textColor = Colors[colorScheme ?? "light"].buttonText;
 
-    // Función para clonar y modificar los hijos (iconos)
     const modifiedChildren = React.Children.map(children, (child) => {
         if (isValidElement(child)) {
             return cloneElement(child, {
@@ -40,6 +39,8 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
         return child;
     });
 
+    const hasChildren = React.Children.count(children) > 0;
+
     return (
         <TouchableOpacity
             style={[styles.button, { backgroundColor }, style]}
@@ -48,7 +49,11 @@ const ThemedButton: React.FC<ThemedButtonProps> = ({
             <View style={styles.contentContainer}>
                 {modifiedChildren}
                 {title && (
-                    <Text style={[styles.buttonText, { color: textColor }]}>
+                    <Text style={[
+                        styles.buttonText, 
+                        { color: textColor },
+                        hasChildren && styles.buttonTextWithIcon
+                    ]}>
                         {title}
                     </Text>
                 )}
@@ -72,6 +77,8 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
         fontWeight: "500",
+    },
+    buttonTextWithIcon: {
         marginLeft: 8,
     },
 });
