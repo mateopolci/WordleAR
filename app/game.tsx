@@ -68,7 +68,12 @@ const game = () => {
                 ))}
             </View>
 
-            <OnScreenKeyboard />
+            <OnScreenKeyboard 
+                onKeyPressed={addKey}
+                blueLetters={blueLetters}
+                yellowLetters={yellowLetters}
+                grayLetters={grayLetters}
+            />
         </View>
     );
 };

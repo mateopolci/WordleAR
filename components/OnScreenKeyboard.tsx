@@ -6,6 +6,7 @@ import {
     View,
 } from "react-native";
 import React from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 type OnScreenKeyboardProps = {
     onKeyPressed: (key: string) => void;
@@ -46,9 +47,48 @@ const OnScreenKeyboard = ({
                         <Pressable
                             key={`key=${key}`}
                             onPress={() => onKeyPressed(key)}
-                            style={[styles.key, { width: keyWidth, height: keyHeight, backgroundColor: '#DDD' }]}
+                            style={({ pressed }) => [
+                                styles.key,
+                                {
+                                    width: keyWidth,
+                                    height: keyHeight,
+                                    backgroundColor: "#DDD",
+                                },
+                                isSpecialKey(key) && { width: keyWidth * 1.5 },
+                                {
+                                    backgroundColor: blueLetters.includes(key)
+                                        ? "#6ABDED"
+                                        : yellowLetters.includes(key)
+                                          ? "#FFD700"
+                                          : grayLetters.includes(key)
+                                            ? "#808080"
+                                            : "#DDD",
+                                },
+								pressed && { backgroundColor: "#868686" },
+
+                            ]}
                         >
-                            <Text style={styles.keyText}>{key}</Text>
+                            <Text
+                                style={[
+                                    styles.keyText,
+                                    key === "ENTER" && { fontSize: 12 },
+                                    isInLetters(key) && { color: "#FFFFFF" },
+                                ]}
+                            >
+                                {isSpecialKey(key) ? (
+                                    key === ENTER ? (
+                                        "Enter"
+                                    ) : (
+                                        <Ionicons
+                                            name="backspace-outline"
+                                            size={24}
+                                            color={"black"}
+                                        ></Ionicons>
+                                    )
+                                ) : (
+                                    key
+                                )}
+                            </Text>
                         </Pressable>
                     ))}
                 </View>
@@ -71,13 +111,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     key: {
-		alignItems: "center",
-		justifyContent: "center",
-		borderRadius: 4,
-	},
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 4,
+    },
     keyText: {
         fontSize: 20,
         fontWeight: "bold",
-		textTransform: "uppercase",
+        textTransform: "uppercase",
     },
 });
