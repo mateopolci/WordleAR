@@ -40,7 +40,7 @@ export default function Index() {
                 </SignedOut>
                 <SignedIn>
                     <ThemedButton
-                        onPress={() => signOut}
+                        onPress={() => signOut()}
                         title="Cerrar Sesión"
                         style={styles.btn}
                     ></ThemedButton>
