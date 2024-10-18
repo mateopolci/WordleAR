@@ -4,8 +4,11 @@ import { Link } from "expo-router";
 import { format } from "date-fns";
 import ThemedText from "@/components/ThemedText";
 import ThemedButton from "@/components/ThemedButton";
+import { SignedIn, SignedOut, useAuth } from '@clerk/clerk-expo';
+
 
 export default function Index() {
+    const { signOut } = useAuth();
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -26,10 +29,22 @@ export default function Index() {
                         style={styles.btn}
                     ></ThemedButton>
                 </Link>
-                <ThemedButton
-                    title="Iniciar Sesión"
-                    style={styles.btn}
-                ></ThemedButton>
+
+                <SignedOut>
+                    <Link href={"/login"} asChild>
+                        <ThemedButton
+                            title="Iniciar sesión"
+                            style={styles.btn}
+                        ></ThemedButton>
+                    </Link>
+                </SignedOut>
+                <SignedIn>
+                    <ThemedButton
+                        onPress={() => signOut}
+                        title="Cerrar Sesión"
+                        style={styles.btn}
+                    ></ThemedButton>
+                </SignedIn>
             </View>
 
             <View style={styles.footer}>
@@ -99,8 +114,5 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderWidth: 1,
         width: 150,
-    },
-    btnText: {
-        fontSize: 16,
     },
 });
