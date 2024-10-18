@@ -1,21 +1,25 @@
 import React from "react";
-import { TouchableOpacity, Text, TouchableOpacityProps, useColorScheme } from "react-native";
+import {
+    TouchableOpacity,
+    Text,
+    TouchableOpacityProps,
+    useColorScheme,
+} from "react-native";
 import Colors from "@/constants/Colors";
 
-const ThemedButton = ({ style, title, ...rest }: TouchableOpacityProps & { title: string }) => {
+const ThemedButton = ({
+    style,
+    title,
+    ...rest
+}: TouchableOpacityProps & { title: string }) => {
     const colorScheme = useColorScheme();
-    
-    const backgroundColor = Colors[colorScheme ?? 'light'].buttonBg;
-    const textColor = Colors[colorScheme ?? 'light'].buttonText;
+
+    const backgroundColor = Colors[colorScheme ?? "light"].buttonBg;
+    const textColor = Colors[colorScheme ?? "light"].buttonText;
 
     return (
-        <TouchableOpacity 
-            style={[{ backgroundColor }, style]} 
-            {...rest}
-        >
-            <Text style={{ color: textColor }}>
-                {title}
-            </Text>
+        <TouchableOpacity style={[{ backgroundColor }, style]} {...rest}>
+            <Text style={{ color: textColor }}>{title}</Text>
         </TouchableOpacity>
     );
 };

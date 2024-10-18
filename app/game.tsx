@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
 
 const game = () => {
-  return (
-    <View>
-      <Text>game</Text>
-    </View>
-  )
-}
+    return (
+        <View>
+            <Text>game</Text>
+        </View>
+    );
+};
 
-export default game
+export default game;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
