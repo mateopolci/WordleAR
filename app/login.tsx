@@ -1,10 +1,17 @@
-import { StyleSheet, TextInput, useColorScheme, View } from "react-native";
+import {
+    StyleSheet,
+    TextInput,
+    useColorScheme,
+    View,
+    Text,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useOAuth } from "@clerk/clerk-expo";
 import { ScrollView } from "react-native-gesture-handler";
-import Colors from "@/constants/Colors"; // Asegúrate de que la ruta sea correcta
+import Colors from "@/constants/Colors";
 import ThemedText from "@/components/ThemedText";
 import ThemedButton from "@/components/ThemedButton";
+import { Ionicons } from "@expo/vector-icons";
 
 enum Strategy {
     Google = "oauth_google",
@@ -16,7 +23,6 @@ const Login = () => {
     const router = useRouter();
     const colorScheme = useColorScheme();
 
-    // Corrige la lógica del color de borde
     const inputBorderColor = colorScheme === "light" ? Colors.light.text : Colors.dark.text;
 
     const { startOAuthFlow: googleAuth } = useOAuth({
@@ -29,10 +35,24 @@ const Login = () => {
         strategy: Strategy.Facebook,
     });
 
-    const handleGoogleAuth = async (strategy: Strategy) => {
-        await googleAuth();
-        router.push("/");
-    };
+    const onSelectAuth = async (strategy: Strategy) => {
+        const selectedAuth = {
+          [Strategy.Google]: googleAuth,
+          [Strategy.Apple]: appleAuth,
+          [Strategy.Facebook]: facebookAuth,
+        }[strategy];
+    
+        try {
+          const { createdSessionId, setActive } = await selectedAuth();
+    
+          if (createdSessionId) {
+            setActive!({ session: createdSessionId });
+            router.back();
+          }
+        } catch (err) {
+          console.error('OAuth error', err);
+        }
+      };
 
     return (
         <ScrollView style={styles.container}>
@@ -46,23 +66,75 @@ const Login = () => {
 
             <ThemedText style={[styles.inputLabel]}>Email</ThemedText>
             <TextInput
-                style={[styles.input, { borderColor: inputBorderColor }]} // Corrige la lógica aquí
-                placeholder="tumail@gmail.com"
-                placeholderTextColor={Colors.light.gray} // Opcional: Ajusta el color del placeholder
+                style={[styles.input, { borderColor: inputBorderColor }]}
+                placeholder="tucorreo@ejemplo.com"
+                placeholderTextColor={Colors.light.gray}
             />
 
             <ThemedText style={[styles.inputLabel]}>Contraseña</ThemedText>
             <TextInput
-                style={[styles.input, { borderColor: inputBorderColor }]} // Corrige la lógica aquí
+                style={[styles.input, { borderColor: inputBorderColor }]}
                 placeholder="****************"
-                placeholderTextColor={Colors.light.gray} // Opcional: Ajusta el color del placeholder
+                placeholderTextColor={Colors.light.gray}
             />
 
-            <ThemedButton
-                title="Iniciar sesión"
-                style={styles.btn}
-            />
-            <View style={{ gap: 20 }} />
+            <ThemedButton title="Iniciar sesión" style={styles.btn} />
+
+            <View style={styles.separatorView}>
+                <View
+                    style={{
+                        flex: 1,
+                        borderBottomColor: inputBorderColor,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                    }}
+                ></View>
+                <Text style={styles.separator}>or</Text>
+                <View
+                    style={{
+                        flex: 1,
+                        borderBottomColor: inputBorderColor,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                    }}
+                ></View>
+            </View>
+
+            <View style={{ gap: 20 }}>
+                <ThemedButton
+                    title="Continuar con Google"
+                    style={styles.btnOutline}
+                    onPress={() => onSelectAuth(Strategy.Google)}
+                >
+                    <Ionicons
+                        name="logo-google"
+                        size={24}
+                        style={styles.btnIcon}
+                    />
+                </ThemedButton>
+
+                <ThemedButton
+                    style={styles.btnOutline}
+                    onPress={() => onSelectAuth(Strategy.Apple)}
+                    title="Continuar con Apple"
+                >
+                    <Ionicons
+                        name="logo-apple"
+                        size={24}
+                        style={styles.btnIcon}
+                    />
+                </ThemedButton>
+
+                <ThemedButton
+                    style={styles.btnOutline}
+                    onPress={() => onSelectAuth(Strategy.Facebook)}
+                    title="Continuar con Facebook"
+                >
+                    <Ionicons
+                        name="logo-facebook"
+                        size={24}
+                        style={styles.btnIcon}
+                    />
+                </ThemedButton>
+            </View>
         </ScrollView>
     );
 };
@@ -110,5 +182,31 @@ const styles = StyleSheet.create({
         height: 50,
         textAlign: "center",
         justifyContent: "center",
+    },
+    separatorView: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+        marginVertical: 20,
+    },
+    separator: {
+        fontSize: 16,
+        color: Colors.light.gray,
+    },
+    btnOutline: {
+        borderWidth: 1,
+        height: 50,
+        borderRadius: 4,
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
+        paddingHorizontal: 10,
+    },
+    btnOutlineText: {
+        fontSize: 16,
+        fontWeight: "500",
+    },
+    btnIcon: {
+        paddingRight: 10,
     },
 });
