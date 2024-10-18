@@ -1,5 +1,6 @@
-export const GREEN = "#60AB55";
-export const YELLOW = "#BCAD4C";
+export const BLUE = "#6ABDED";
+/* export const YELLOW = "#BCAD4C"; */
+export const YELLOW = "#FFD700";
 export const DARK = "#787c7e";
 
 const Colors = {
