@@ -6,7 +6,6 @@ import ThemedText from "@/components/ThemedText";
 import ThemedButton from "@/components/ThemedButton";
 import { SignedIn, SignedOut, useAuth } from '@clerk/clerk-expo';
 
-
 export default function Index() {
     const { signOut } = useAuth();
     return (
@@ -18,7 +17,7 @@ export default function Index() {
                     <Text style={styles.titleHighlight}>AR</Text>
                 </ThemedText>
                 <ThemedText style={styles.text}>
-                    Descubre la palabra de 5 letras en 6 intentos.
+                    Descubre la palabra de 5 letras.
                 </ThemedText>
             </View>
 

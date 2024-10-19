@@ -28,7 +28,6 @@ if (!publishableKey) {
     );
 }
 
-// Cargar las fuentes primero
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -96,6 +95,29 @@ export default function RootLayout() {
                                 name="register"
                                 options={{
                                     presentation: "modal",
+                                    headerTitle: () => (
+                                        <ThemedText style={styles.title}>
+                                            Wordle
+                                            <Text style={styles.titleHighlight}>
+                                                AR
+                                            </Text>
+                                        </ThemedText>
+                                    ),
+                                    headerLeft: () => (
+                                        <TouchableOpacity
+                                            onPress={() => router.back()}
+                                        >
+                                            <Ionicons
+                                                name="close"
+                                                size={26}
+                                                color={
+                                                    colorScheme === "light"
+                                                        ? "#000000"
+                                                        : "#FFFFFF"
+                                                }
+                                            ></Ionicons>
+                                        </TouchableOpacity>
+                                    ),
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen

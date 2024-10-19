@@ -58,11 +58,7 @@ const Login = () => {
     return (
         <ScrollView style={styles.container}>
             <ThemedText style={styles.header}>
-                Iniciar sesión o crear una cuenta
-            </ThemedText>
-            <ThemedText style={styles.subText}>
-                Al continuar, aceptas los Términos de Venta, Términos de
-                Servicio y la Política de Privacidad.
+                Inicio de sesión
             </ThemedText>
 
             <ThemedText style={[styles.inputLabel]}>Email</ThemedText>
