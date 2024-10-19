@@ -5,7 +5,7 @@ import {
     View,
     Text,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useOAuth } from "@clerk/clerk-expo";
 import { ScrollView } from "react-native-gesture-handler";
 import Colors from "@/constants/Colors";
@@ -23,7 +23,8 @@ const Login = () => {
     const router = useRouter();
     const colorScheme = useColorScheme();
 
-    const inputBorderColor = colorScheme === "light" ? Colors.light.text : Colors.dark.text;
+    const inputBorderColor =
+        colorScheme === "light" ? Colors.light.text : Colors.dark.text;
 
     const { startOAuthFlow: googleAuth } = useOAuth({
         strategy: Strategy.Google,
@@ -37,22 +38,22 @@ const Login = () => {
 
     const onSelectAuth = async (strategy: Strategy) => {
         const selectedAuth = {
-          [Strategy.Google]: googleAuth,
-          [Strategy.Apple]: appleAuth,
-          [Strategy.Facebook]: facebookAuth,
+            [Strategy.Google]: googleAuth,
+            [Strategy.Apple]: appleAuth,
+            [Strategy.Facebook]: facebookAuth,
         }[strategy];
-    
+
         try {
-          const { createdSessionId, setActive } = await selectedAuth();
-    
-          if (createdSessionId) {
-            setActive!({ session: createdSessionId });
-            router.back();
-          }
+            const { createdSessionId, setActive } = await selectedAuth();
+
+            if (createdSessionId) {
+                setActive!({ session: createdSessionId });
+                router.back();
+            }
         } catch (err) {
-          console.error('OAuth error', err);
+            console.error("OAuth error", err);
         }
-      };
+    };
 
     return (
         <ScrollView style={styles.container}>
@@ -66,19 +67,45 @@ const Login = () => {
 
             <ThemedText style={[styles.inputLabel]}>Email</ThemedText>
             <TextInput
-                style={[styles.input, { borderColor: inputBorderColor }]}
+                style={[styles.input, { borderColor: inputBorderColor, color: inputBorderColor }]}
                 placeholder="tucorreo@ejemplo.com"
                 placeholderTextColor={Colors.light.gray}
             />
 
             <ThemedText style={[styles.inputLabel]}>Contraseña</ThemedText>
             <TextInput
-                style={[styles.input, { borderColor: inputBorderColor }]}
+                style={[styles.input, { borderColor: inputBorderColor, color: inputBorderColor}]}
                 placeholder="****************"
                 placeholderTextColor={Colors.light.gray}
+                secureTextEntry={true}
+                cursorColor={"#6ABDED"}
             />
 
             <ThemedButton title="Iniciar sesión" style={styles.btn} />
+
+            <View style={styles.separatorView}>
+                <View
+                    style={{
+                        flex: 1,
+                    }}
+                ></View>
+                <Link href={"/register"} asChild>
+                    <Text
+                        style={{
+                            marginTop: 15,
+                            color: "#6ABDED",
+                            fontSize: 16,
+                        }}
+                    >
+                        No tengo cuenta
+                    </Text>
+                </Link>
+                <View
+                    style={{
+                        flex: 1,
+                    }}
+                ></View>
+            </View>
 
             <View style={styles.separatorView}>
                 <View
@@ -88,7 +115,7 @@ const Login = () => {
                         borderBottomWidth: StyleSheet.hairlineWidth,
                     }}
                 ></View>
-                <Text style={styles.separator}>or</Text>
+                <Text style={styles.separator}>o</Text>
                 <View
                     style={{
                         flex: 1,
@@ -187,7 +214,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
-        marginVertical: 20,
+        marginVertical: 10,
     },
     separator: {
         fontSize: 16,

@@ -93,6 +93,12 @@ export default function RootLayout() {
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen
+                                name="register"
+                                options={{
+                                    presentation: "modal",
+                                }}
+                            ></Stack.Screen>
+                            <Stack.Screen
                                 name="game"
                                 options={{
                                     headerBackTitle: "Wordle",
