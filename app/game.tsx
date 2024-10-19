@@ -6,6 +6,7 @@ import OnScreenKeyboard from "@/components/OnScreenKeyboard";
 import { Ionicons } from "@expo/vector-icons";
 import { allWords } from "@/utils/allWords";
 import { words } from "@/utils/targetWord";
+import { set } from "date-fns";
 
 //Debug
 const ROWS = 6;
@@ -41,8 +42,66 @@ const game = () => {
     }
 
     const checkWord = () => {
+        const currentWord = rows[curRow].join('');
+        if(currentWord.length < word.length){
+            //Todo: Mostrar error
+            console.log("La palabra debe tener 5 letras");
+            return;
+        }
+        if (!allWords.includes(currentWord)){
+            //Todo: Mostrar error
+            console.log("No es una palabra");
+            //Comentado para debug
+            //return;
+        }
+        const newBlue: string[] = [];
+        const newYellow: string[] = [];
+        const newGray: string[] = [];
 
-    }
+        currentWord.split('').forEach((letter, index) => {
+            if (letter === wordLetters[index]){
+                newBlue.push(letter);
+            }else if (wordLetters.includes(letter)){
+                newYellow.push(letter);
+            }else{
+                newGray.push(letter);
+            }
+        });
+        setBlueLetters([...blueLetters, ...newBlue]);
+        setYellowLetters([...yellowLetters, ...newYellow]);
+        setGrayLetters([...grayLetters, ...newGray]);
+
+        setTimeout(() => {
+            if (currentWord === word){
+                console.log("Ganaste");
+                //Todo: Mostrar mensaje de ganaste
+            } else if (curRow + 1 >= rows.length){
+                console.log("Perdiste");
+                //Todo: Mostrar mensaje de perdiste
+            }
+        }, 1500);
+        setCurRow(curRow + 1);
+        setCurCol(0);
+    };
+
+    const getCellColor = (cell: string, rowIndex: number, cellIndex: number) => {
+        if (curRow > rowIndex){
+            if (wordLetters[cellIndex] === cell){
+                return "#6ABDED";
+            } else if(wordLetters.includes(cell)){
+                return "#FFE44D";
+            }else{
+                return grayColor;
+            }
+        }
+        return 'transparent';
+    };
+    const getBorderColor = (cell: string, rowIndex: number, cellIndex: number) => {
+        if (curRow > rowIndex && cell !== ''){
+            return getCellColor(cell, rowIndex, cellIndex);
+        }
+        return Colors.light.gray;
+    };
 
     const addKey = (key: string) => {
         console.log("addKey", key);
@@ -103,8 +162,13 @@ const game = () => {
                 {rows.map((row, rowIndex) => (
                     <View style={styles.gameFieldRow} key={`row-${rowIndex}`}>
                         {row.map((cell, cellIndex) => (
-                            <View style={styles.cell} key={`cell-${rowIndex}-${cellIndex}`}>
-                                <Text style={styles.cellText}>{cell}</Text>
+                            <View style={[styles.cell, {
+                                backgroundColor: getCellColor(cell, rowIndex, cellIndex),
+                                borderColor: getBorderColor(cell, rowIndex, cellIndex),
+                            },]} key={`cell-${rowIndex}-${cellIndex}`}>
+                                <Text style={[styles.cellText,{
+                                    color: curRow > rowIndex  ? "#FFFFFF" : textColor,
+                                }]}>{cell}</Text>
                             </View>
                         ))}
                     </View>
