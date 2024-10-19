@@ -29,10 +29,9 @@ const game = () => {
     const [grayLetters, setGrayLetters] = useState<string[]>([]);
 
     //Palabra random
-    /* const [word, setWord] = useState<string>(words[Math.floor(Math.random() * words.length)]); */
-
+    const [word, setWord] = useState<string>(words[Math.floor(Math.random() * words.length)]);
     //Debug
-    const [word, setWord] = useState<string>('mateo');
+/*  const [word, setWord] = useState<string>('mateo');*/
     const wordLetters = word.split('');
 
     const colStateRef = useRef(curCol);
