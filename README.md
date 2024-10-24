@@ -28,7 +28,6 @@
 
 - [x] Google.
 - [x] Facebook.
-- [x] Cerrar sesión.
 - [x] Apple.
 - [ ] Mail y contraseña.
 

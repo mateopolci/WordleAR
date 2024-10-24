@@ -44,6 +44,7 @@ const register = () => {
                 style={[styles.input, { borderColor: inputBorderColor, color: inputBorderColor }]}
                 placeholder="tucorreo@ejemplo.com"
                 placeholderTextColor={Colors.light.gray}
+                keyboardType="email-address"
             />
 
             <ThemedText style={[styles.inputLabel]}>Contraseña</ThemedText>
