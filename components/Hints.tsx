@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     },
     priceText: {
         position: 'absolute',
-        bottom: -4,
+        bottom: -13,
         right: -12,
         fontSize: 12,
         padding: 3,

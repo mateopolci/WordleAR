@@ -186,7 +186,7 @@ export default game;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingVertical: 15,
+        paddingVertical: 25,
     },
     headerIcon: {
         flexDirection: 'row',
@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
     },
     cell: {
         backgroundColor: '#FFFFFF',
-        width: 60,
-        height: 60,
+        width: 62,
+        height: 62,
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
