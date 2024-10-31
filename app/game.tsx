@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, useColorScheme } from "react-native";
+import { StyleSheet, Text, View, useColorScheme, Alert } from "react-native";
 import { useRef, useState } from "react";
 import Colors from "@/constants/Colors";
 import { Stack, useRouter } from "expo-router";
@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { allWords } from "@/utils/allWords";
 import { words } from "@/utils/targetWord2";
 
-//Debug
+//Modificar a 1 para debug
 const ROWS = 6;
 
 const game = () => {
@@ -29,7 +29,8 @@ const game = () => {
 
     //Palabra random (Descomentar para jugar)
     const [word, setWord] = useState<string>(words[Math.floor(Math.random() * words.length)]);
-    //Palabra mateo para testing
+    
+    //Palabra MATEO (Descomentar para debug)
     /* const [word, setWord] = useState<string>('mateo'); */
     
     const wordLetters = word.split('');
@@ -43,15 +44,12 @@ const game = () => {
     const checkWord = () => {
         const currentWord = rows[curRow].join('');
         if(currentWord.length < word.length){
-            //Todo: Mostrar error
-            console.log("La palabra debe tener 5 letras");
+            Alert.alert("Cuidado", "La palabra debe tener 5 letras");
             return;
         }
         if (!allWords.includes(currentWord)){
-            //Todo: Mostrar error
-            console.log("No es una palabra");
-            //Comentado para debug
-            //return;
+            Alert.alert("Cuidado", `${currentWord.toUpperCase()} no es una palabra válida`);
+            return;
         }
         const newBlue: string[] = [];
         const newYellow: string[] = [];
