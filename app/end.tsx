@@ -59,56 +59,29 @@ const end = () => {
     const shareGame = () => {
         const game = JSON.parse(gameField!);
         const imageText: string[][] = [];
-
-        const wordLetters = word.split('');
+    
+        const wordLetters = word.split("");
         game.forEach((row: string[], rowIndex: number) => {
             imageText.push([]);
             row.forEach((letter, colIndex) => {
                 if (wordLetters[colIndex] === letter) {
-                    imageText[rowIndex].push('🟦');
+                    imageText[rowIndex].push("🟦");
                 } else if (wordLetters.includes(letter)) {
-                    imageText[rowIndex].push('🟨');
+                    imageText[rowIndex].push("🟨");
                 } else {
-                    imageText[rowIndex].push('⬜');
+                    imageText[rowIndex].push("⬜");
                 }
             });
         });
-
-        const html = `
-      <html>
-        <head>
-          <style>
-
-            .game {
-              display: flex;
-              flex-direction: column;
-            }
-              .row {
-              display: flex;
-              flex-direction: row;
-
-              }
-            .cell {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
-
-          </style>
-        </head>
-        <body>
-          <h1>WordleAR</h1>
-          <div class="game">
-           ${imageText.map((row) => `<div class="row">${row.map((cell) => `<div class="cell">${cell}</div>`).join('')}</div>`).join('')}
-          </div>
-        </body>
-      </html>
-    `;
-
+    
+        const textRepresentation = `Esta fue mi partida en WordleAR, ¿Podés superarme?\n\n${imageText
+            .map(row => row.join(" "))
+            .join("\n")}`;
+    
         MailComposer.composeAsync({
             subject: `Acabo de jugar a WordleAR!`,
-            body: html,
-            isHtml: true,
+            body: textRepresentation,
+            isHtml: false,
         });
     };
 

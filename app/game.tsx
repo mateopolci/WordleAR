@@ -6,6 +6,7 @@ import OnScreenKeyboard from '@/components/OnScreenKeyboard';
 import {Ionicons} from '@expo/vector-icons';
 import {allWords} from '@/utils/allWords';
 import {words} from '@/utils/targetWord2';
+import Hints from '@/components/Hints';
 
 //Modificar a 1 para debug
 const ROWS = 6;
@@ -171,6 +172,8 @@ const game = () => {
             </View>
 
             <OnScreenKeyboard onKeyPressed={addKey} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
+
+            <Hints></Hints>
         </View>
     );
 };

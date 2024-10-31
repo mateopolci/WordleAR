@@ -38,14 +38,9 @@ export default function Index() {
 
             <SignedIn>
                 <View style={styles.header}>
-                    <ThemedText>Sesión iniciada como {user?.fullName}</ThemedText>
+                    <ThemedText>Bienvenido {user?.fullName}</ThemedText>
                 </View>
             </SignedIn>
-
-            <View style={styles.footer}>
-                <ThemedText style={styles.footerDate}>{format(new Date(), 'dd/MM/yyyy')}</ThemedText>
-                <ThemedText style={styles.footerNumber}>Número 1151</ThemedText>
-            </View>
         </View>
     );
 }
@@ -74,24 +69,6 @@ const styles = StyleSheet.create({
         fontSize: 26,
         textAlign: 'center',
         fontFamily: 'FrankRuhlLibre_500Medium',
-    },
-    footer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    footerDate: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    footerNumber: {
-        paddingBottom: 20,
-        fontWeight: '500',
-    },
-    footerText: {
-        fontSize: 16,
-        fontFamily: 'FrankRuhlLibre_500',
-        textAlign: 'center',
-        paddingHorizontal: 70,
     },
     menu: {
         alignItems: 'center',
