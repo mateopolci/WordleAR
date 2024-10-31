@@ -21,7 +21,7 @@ const keys = [
 const OnScreenKeyboard = ({onKeyPressed, blueLetters, yellowLetters, grayLetters}: OnScreenKeyboardProps) => {
     const {width} = useWindowDimensions();
     const keyWidth = (width - 60) / keys[0].length;
-    const keyHeight = 60;
+    const keyHeight = 55;
 
     const isSpecialKey = (key: string) => [ENTER, BACKSPACE].includes(key);
 
@@ -64,7 +64,6 @@ export default OnScreenKeyboard;
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 40,
         gap: 4,
         alignSelf: 'center',
     },

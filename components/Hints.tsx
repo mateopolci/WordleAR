@@ -54,13 +54,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 40,
-        paddingVertical: 10,
+        paddingBottom: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        alignItems: 'center',
     },
     helpBtn: {
         marginHorizontal: 10,
-        marginTop: 20,
         width: 60,
         height: 60,
         borderRadius: 30,

@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 8,
         //Ver si arregla el responsive
-        flex: 2,
+        flex: 3,
     },
     gameFieldRow: {
         flexDirection: 'row',
