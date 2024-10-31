@@ -16,24 +16,28 @@ const Hints = () => {
 
     return (
         <View style={styles.container}>
+            {/*  */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.helpBtn, {backgroundColor: textColor, borderColor: backgroundColor}]} onPress={() => hint1()}>
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
                 <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$25</Text>
             </View>
+            {/*  */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.helpBtn, {backgroundColor: textColor, borderColor: backgroundColor}]} onPress={() => hint2()}>
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
                 <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$50</Text>
             </View>
+            {/*  */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.helpBtn, {backgroundColor: textColor, borderColor: backgroundColor}]} onPress={() => hint3()}>
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
                 <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$75</Text>
             </View>
+            {/*  */}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.helpBtn, {backgroundColor: textColor, borderColor: backgroundColor}]} onPress={() => hint4()}>
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
@@ -71,8 +75,8 @@ const styles = StyleSheet.create({
     },
     priceText: {
         position: 'absolute',
-        bottom: -5,
-        right: -5,
+        bottom: -4,
+        right: -12,
         fontSize: 12,
         padding: 3,
         borderRadius: 10,

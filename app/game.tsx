@@ -171,9 +171,12 @@ const game = () => {
                 ))}
             </View>
 
-            <OnScreenKeyboard onKeyPressed={addKey} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
-
-            <Hints></Hints>
+            <View style={styles.keyboardContainer}>
+                <OnScreenKeyboard onKeyPressed={addKey} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
+            </View>
+            <View style={styles.hintsContainer}>
+                <Hints></Hints>
+            </View>
         </View>
     );
 };
@@ -183,7 +186,7 @@ export default game;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingVertical: 40,
+        paddingVertical: 15,
     },
     headerIcon: {
         flexDirection: 'row',
@@ -192,6 +195,8 @@ const styles = StyleSheet.create({
     gameField: {
         alignItems: 'center',
         gap: 8,
+        //Ver si arregla el responsive
+        flex: 2,
     },
     gameFieldRow: {
         flexDirection: 'row',
@@ -199,8 +204,8 @@ const styles = StyleSheet.create({
     },
     cell: {
         backgroundColor: '#FFFFFF',
-        width: 62,
-        height: 62,
+        width: 60,
+        height: 60,
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',
@@ -210,4 +215,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textTransform: 'uppercase',
     },
+    hintsContainer:{
+        //Ver si arregla el responsive
+        flex: 0.5,
+    },
+    keyboardContainer:{
+        //Ver si arregla el responsive
+        flex: 1,
+    }
 });
