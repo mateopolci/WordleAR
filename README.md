@@ -13,28 +13,3 @@
    ```bash
     npx expo start
    ```
-
-## Todo's
-
-### Generales
-
-- [x] Menu principal.
-- [x] Juego base.
-- [x] Diccionario de palabras argentinas.
-
----
-
-### Autenticación
-
-- [x] Google.
-- [x] Facebook.
-- [x] Apple.
-- [ ] Mail y contraseña.
-
----
-
-## Funcionalidades extras
-
-- [ ] Dictado por voz.
-- [ ] Leaderboard.
-- [ ] Sistema económico.
