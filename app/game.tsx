@@ -105,7 +105,6 @@ const game = () => {
         const newRows = [...rows.map((row) => [...row])];
 
         if (key === 'ENTER') {
-            //Comprobar si acertó la palabra
             checkWord();
         } else if (key === 'BACKSPACE') {
             if (colStateRef.current === 0) {
@@ -124,6 +123,19 @@ const game = () => {
             newRows[curRow][colStateRef.current] = key;
             setRows(newRows);
             setCurCol(colStateRef.current + 1);
+        }
+    };
+
+    const handleHint = (hint: 'gray3' | 'gray5' | 'yellow1' | 'yellowAll', letters: string[]) => {
+        switch (hint) {
+            case 'gray3':
+            case 'gray5':
+                setGrayLetters([...grayLetters, ...letters]);
+                break;
+            case 'yellow1':
+            case 'yellowAll':
+                setYellowLetters([...yellowLetters, ...letters]);
+                break;
         }
     };
 
@@ -175,7 +187,7 @@ const game = () => {
                 <OnScreenKeyboard onKeyPressed={addKey} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
             <View style={styles.hintsContainer}>
-                <Hints></Hints>
+                <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />
             </View>
         </View>
     );
@@ -195,7 +207,6 @@ const styles = StyleSheet.create({
     gameField: {
         alignItems: 'center',
         gap: 8,
-        //Ver si arregla el responsive
         flex: 3,
     },
     gameFieldRow: {
@@ -215,12 +226,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textTransform: 'uppercase',
     },
-    hintsContainer:{
-        //Ver si arregla el responsive
+    hintsContainer: {
         flex: 0.5,
     },
-    keyboardContainer:{
-        //Ver si arregla el responsive
+    keyboardContainer: {
         flex: 1,
-    }
+    },
 });
