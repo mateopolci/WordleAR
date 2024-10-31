@@ -1,31 +1,20 @@
-import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
-import * as SplashScreen from "expo-splash-screen";
-import {
-    useFonts,
-    FrankRuhlLibre_800ExtraBold,
-    FrankRuhlLibre_500Medium,
-    FrankRuhlLibre_900Black,
-} from "@expo-google-fonts/frank-ruhl-libre";
-import {
-    DefaultTheme,
-    DarkTheme,
-    ThemeProvider,
-} from "@react-navigation/native";
-import { useColorScheme, StyleSheet, Text } from "react-native";
-import { ClerkProvider, ClerkLoaded } from "@clerk/clerk-expo";
-import { tokenCache } from "@/utils/cache";
-import ThemedText from "@/components/ThemedText";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {Stack, useRouter} from 'expo-router';
+import {useEffect} from 'react';
+import * as SplashScreen from 'expo-splash-screen';
+import {useFonts, FrankRuhlLibre_800ExtraBold, FrankRuhlLibre_500Medium, FrankRuhlLibre_900Black} from '@expo-google-fonts/frank-ruhl-libre';
+import {DefaultTheme, DarkTheme, ThemeProvider} from '@react-navigation/native';
+import {useColorScheme, StyleSheet, Text} from 'react-native';
+import {ClerkProvider, ClerkLoaded} from '@clerk/clerk-expo';
+import {tokenCache} from '@/utils/cache';
+import ThemedText from '@/components/ThemedText';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Ionicons} from '@expo/vector-icons';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
 if (!publishableKey) {
-    throw new Error(
-        "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env",
-    );
+    throw new Error('Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env');
 }
 
 SplashScreen.preventAutoHideAsync();
@@ -53,40 +42,23 @@ export default function RootLayout() {
     return (
         <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
             <ClerkLoaded>
-                <ThemeProvider
-                    value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-                >
-                    <GestureHandlerRootView style={{ flex: 1 }}>
+                <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                    <GestureHandlerRootView style={{flex: 1}}>
                         <Stack>
-                            <Stack.Screen
-                                name="index"
-                                options={{ headerShown: false }}
-                            />
+                            <Stack.Screen name="index" options={{headerShown: false}} />
                             <Stack.Screen
                                 name="login"
                                 options={{
-                                    presentation: "modal",
+                                    presentation: 'modal',
                                     headerTitle: () => (
                                         <ThemedText style={styles.title}>
                                             Wordle
-                                            <Text style={styles.titleHighlight}>
-                                                AR
-                                            </Text>
+                                            <Text style={styles.titleHighlight}>AR</Text>
                                         </ThemedText>
                                     ),
                                     headerLeft: () => (
-                                        <TouchableOpacity
-                                            onPress={() => router.back()}
-                                        >
-                                            <Ionicons
-                                                name="close"
-                                                size={26}
-                                                color={
-                                                    colorScheme === "light"
-                                                        ? "#000000"
-                                                        : "#FFFFFF"
-                                                }
-                                            ></Ionicons>
+                                        <TouchableOpacity onPress={() => router.back()}>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
                                         </TouchableOpacity>
                                     ),
                                 }}
@@ -94,28 +66,16 @@ export default function RootLayout() {
                             <Stack.Screen
                                 name="register"
                                 options={{
-                                    presentation: "modal",
+                                    presentation: 'modal',
                                     headerTitle: () => (
                                         <ThemedText style={styles.title}>
                                             Wordle
-                                            <Text style={styles.titleHighlight}>
-                                                AR
-                                            </Text>
+                                            <Text style={styles.titleHighlight}>AR</Text>
                                         </ThemedText>
                                     ),
                                     headerLeft: () => (
-                                        <TouchableOpacity
-                                            onPress={() => router.back()}
-                                        >
-                                            <Ionicons
-                                                name="close"
-                                                size={26}
-                                                color={
-                                                    colorScheme === "light"
-                                                        ? "#000000"
-                                                        : "#FFFFFF"
-                                                }
-                                            ></Ionicons>
+                                        <TouchableOpacity onPress={() => router.back()}>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
                                         </TouchableOpacity>
                                     ),
                                 }}
@@ -123,33 +83,27 @@ export default function RootLayout() {
                             <Stack.Screen
                                 name="game"
                                 options={{
-                                    headerBackTitle: "Wordle",
-                                    headerTintColor:
-                                        colorScheme === "light"
-                                            ? "#000000"
-                                            : "#FFFFFF",
-                                            title: "",
-                                            headerBackTitleStyle: {
-                                                fontFamily: "FrankRuhlLibre_800ExtraBold",
-                                                fontSize: 22,
-                                            },
+                                    headerBackTitle: 'Wordle',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                    title: '',
+                                    headerBackTitleStyle: {
+                                        fontFamily: 'FrankRuhlLibre_800ExtraBold',
+                                        fontSize: 22,
+                                    },
                                 }}
                             />
                             <Stack.Screen
                                 name="end"
                                 options={{
-                                    headerBackTitle: "Fin del juego",
+                                    headerBackTitle: 'Fin del juego',
                                     presentation: 'fullScreenModal',
                                     headerShadowVisible: false,
-                                    headerTintColor:
-                                        colorScheme === "light"
-                                            ? "#000000"
-                                            : "#FFFFFF",
-                                            title: "",
-                                            headerBackTitleStyle: {
-                                                fontFamily: "FrankRuhlLibre_800ExtraBold",
-                                                fontSize: 22,
-                                            },
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                    title: '',
+                                    headerBackTitleStyle: {
+                                        fontFamily: 'FrankRuhlLibre_800ExtraBold',
+                                        fontSize: 22,
+                                    },
                                 }}
                             />
                         </Stack>
@@ -162,11 +116,11 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
     title: {
         fontSize: 40,
-        fontFamily: "FrankRuhlLibre_800ExtraBold",
+        fontFamily: 'FrankRuhlLibre_800ExtraBold',
     },
     titleHighlight: {
-        color: "#6ABDED",
+        color: '#6ABDED',
         fontSize: 40,
-        fontFamily: "FrankRuhlLibre_900Black",
+        fontFamily: 'FrankRuhlLibre_900Black',
     },
 });

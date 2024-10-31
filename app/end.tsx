@@ -1,18 +1,18 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import Icon from "@/assets/images/wordlear-icon.svg";
-import Colors from "@/constants/Colors";
-import ThemedText from "@/components/ThemedText";
-import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
-import ThemedButton from "@/components/ThemedButton";
-import * as MailComposer from "expo-mail-composer";
-import { FIRESTORE_DB } from "@/utils/FirebaseConfig";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Link, useLocalSearchParams, useRouter} from 'expo-router';
+import {useEffect, useState} from 'react';
+import {Ionicons} from '@expo/vector-icons';
+import Icon from '@/assets/images/wordlear-icon.svg';
+import Colors from '@/constants/Colors';
+import ThemedText from '@/components/ThemedText';
+import {SignedIn, SignedOut, useUser} from '@clerk/clerk-expo';
+import ThemedButton from '@/components/ThemedButton';
+import * as MailComposer from 'expo-mail-composer';
+import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
 
 const end = () => {
-    const { win, word, gameField } = useLocalSearchParams<{
+    const {win, word, gameField} = useLocalSearchParams<{
         win: string;
         word: string;
         gameField?: string;
@@ -20,7 +20,7 @@ const end = () => {
 
     const router = useRouter();
     const [userScore, setUserScore] = useState<any>();
-    const { user } = useUser();
+    const {user} = useUser();
 
     useEffect(() => {
         if (user) {
@@ -36,9 +36,9 @@ const end = () => {
 
         let newScore = {
             played: 1,
-            wins: win === "true" ? 1 : 0,
-            lastGame: win === "true" ? "win" : "loss",
-            currentStreak: win === "true" ? 1 : 0,
+            wins: win === 'true' ? 1 : 0,
+            lastGame: win === 'true' ? 'win' : 'loss',
+            currentStreak: win === 'true' ? 1 : 0,
         };
 
         if (docSnap.exists()) {
@@ -46,14 +46,9 @@ const end = () => {
 
             newScore = {
                 played: data.played + 1,
-                wins: win === "true" ? data.wins + 1 : data.wins,
-                lastGame: win === "true" ? "win" : "loss",
-                currentStreak:
-                    win === "true" && data.lastGame === "win"
-                        ? data.currentStreak + 1
-                        : win === "true"
-                          ? 1
-                          : 0,
+                wins: win === 'true' ? data.wins + 1 : data.wins,
+                lastGame: win === 'true' ? 'win' : 'loss',
+                currentStreak: win === 'true' && data.lastGame === 'win' ? data.currentStreak + 1 : win === 'true' ? 1 : 0,
             };
         }
 
@@ -65,16 +60,16 @@ const end = () => {
         const game = JSON.parse(gameField!);
         const imageText: string[][] = [];
 
-        const wordLetters = word.split("");
+        const wordLetters = word.split('');
         game.forEach((row: string[], rowIndex: number) => {
             imageText.push([]);
             row.forEach((letter, colIndex) => {
                 if (wordLetters[colIndex] === letter) {
-                    imageText[rowIndex].push("🟦");
+                    imageText[rowIndex].push('🟦');
                 } else if (wordLetters.includes(letter)) {
-                    imageText[rowIndex].push("🟨");
+                    imageText[rowIndex].push('🟨');
                 } else {
-                    imageText[rowIndex].push("⬜");
+                    imageText[rowIndex].push('⬜');
                 }
             });
         });
@@ -104,14 +99,7 @@ const end = () => {
         <body>
           <h1>WordleAR</h1>
           <div class="game">
-           ${imageText
-               .map(
-                   (row) =>
-                       `<div class="row">${row
-                           .map((cell) => `<div class="cell">${cell}</div>`)
-                           .join("")}</div>`,
-               )
-               .join("")}
+           ${imageText.map((row) => `<div class="row">${row.map((cell) => `<div class="cell">${cell}</div>`).join('')}</div>`).join('')}
           </div>
         </body>
       </html>
@@ -126,7 +114,7 @@ const end = () => {
 
     const navigateRoot = () => {
         router.dismissAll();
-        router.replace("/");
+        router.replace('/');
     };
 
     return (
@@ -134,37 +122,24 @@ const end = () => {
             <TouchableOpacity
                 onPress={navigateRoot}
                 style={{
-                    alignSelf: "flex-end",
+                    alignSelf: 'flex-end',
                 }}
             >
                 <Ionicons name="close" size={30} color={Colors.light.gray} />
             </TouchableOpacity>
 
             <View style={styles.header}>
-                {win === "true" ? (
-                    <Ionicons name="star" size={60} color="#FFE44D" />
-                ) : (
-                    <Icon width={100} height={70} />
-                )}
+                {win === 'true' ? <Ionicons name="star" size={60} color="#FFE44D" /> : <Icon width={100} height={70} />}
 
-                <ThemedText style={styles.title}>
-                    {win === "true" ? "¡Ganaste!" : "Gracias por jugar"}
-                </ThemedText>
+                <ThemedText style={styles.title}>{win === 'true' ? '¡Ganaste!' : 'Gracias por jugar'}</ThemedText>
 
-                <ThemedText style={styles.text}>
-                    {win === "false" && `La palabra era: ${word.toUpperCase()}`}
-                </ThemedText>
+                <ThemedText style={styles.text}>{win === 'false' && `La palabra era: ${word.toUpperCase()}`}</ThemedText>
 
                 <SignedOut>
-                    <ThemedText style={styles.text}>
-                        ¿Querés ver tus rachas y estadísticas?
-                    </ThemedText>
+                    <ThemedText style={styles.text}>¿Querés ver tus rachas y estadísticas?</ThemedText>
 
-                    <Link href={"/login"} asChild>
-                        <ThemedButton
-                            title="Iniciar sesión"
-                            style={styles.btn}
-                        ></ThemedButton>
+                    <Link href={'/login'} asChild>
+                        <ThemedButton title="Iniciar sesión" style={styles.btn}></ThemedButton>
                     </Link>
                 </SignedOut>
 
@@ -172,21 +147,15 @@ const end = () => {
                     <ThemedText style={styles.text}>Estadisticas</ThemedText>
                     <View style={styles.stats}>
                         <View>
-                            <ThemedText style={styles.score}>
-                                {userScore?.played}
-                            </ThemedText>
+                            <ThemedText style={styles.score}>{userScore?.played}</ThemedText>
                             <ThemedText>Jugadas</ThemedText>
                         </View>
                         <View>
-                            <ThemedText style={styles.score}>
-                                {userScore?.wins}
-                            </ThemedText>
+                            <ThemedText style={styles.score}>{userScore?.wins}</ThemedText>
                             <ThemedText>Ganadas</ThemedText>
                         </View>
                         <View>
-                            <ThemedText style={styles.score}>
-                                {userScore?.currentStreak}
-                            </ThemedText>
+                            <ThemedText style={styles.score}>{userScore?.currentStreak}</ThemedText>
                             <ThemedText>Racha</ThemedText>
                         </View>
                     </View>
@@ -195,8 +164,8 @@ const end = () => {
                 <View
                     style={{
                         height: StyleSheet.hairlineWidth,
-                        width: "100%",
-                        backgroundColor: "#4e4e4e",
+                        width: '100%',
+                        backgroundColor: '#4e4e4e',
                     }}
                 />
 
@@ -218,24 +187,24 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     header: {
-        alignItems: "center",
+        alignItems: 'center',
         gap: 10,
     },
     title: {
-        fontFamily: "FrankRuhlLibre_800ExtraBold",
+        fontFamily: 'FrankRuhlLibre_800ExtraBold',
         fontSize: 30,
-        textAlign: "center",
+        textAlign: 'center',
     },
     text: {
         fontSize: 18,
-        textAlign: "center",
-        fontFamily: "FrankRuhlLibre_500Medium",
+        textAlign: 'center',
+        fontFamily: 'FrankRuhlLibre_500Medium',
     },
     btn: {
         marginBottom: 20,
         padding: 10,
         borderRadius: 10,
-        alignItems: "center",
+        alignItems: 'center',
         borderWidth: 1,
         width: 150,
         marginTop: 10,
@@ -243,27 +212,27 @@ const styles = StyleSheet.create({
     btnText: {
         padding: 14,
         fontSize: 16,
-        fontWeight: "bold",
-        color: "white",
+        fontWeight: 'bold',
+        color: 'white',
     },
     stats: {
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
         gap: 10,
         paddingVertical: 10,
     },
     score: {
         fontSize: 26,
-        fontFamily: "bold",
-        textAlign: "center",
+        fontFamily: 'bold',
+        textAlign: 'center',
     },
     iconBtn: {
         marginVertical: 20,
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#4CAF50",
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#4CAF50',
         borderRadius: 30,
-        width: "70%",
+        width: '70%',
     },
 });
