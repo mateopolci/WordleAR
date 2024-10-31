@@ -225,10 +225,6 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingHorizontal: 10,
     },
-    btnOutlineText: {
-        fontSize: 16,
-        fontWeight: "500",
-    },
     btnIcon: {
         paddingRight: 10,
     },

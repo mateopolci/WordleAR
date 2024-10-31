@@ -135,6 +135,23 @@ export default function RootLayout() {
                                             },
                                 }}
                             />
+                            <Stack.Screen
+                                name="end"
+                                options={{
+                                    headerBackTitle: "Fin del juego",
+                                    presentation: 'fullScreenModal',
+                                    headerShadowVisible: false,
+                                    headerTintColor:
+                                        colorScheme === "light"
+                                            ? "#000000"
+                                            : "#FFFFFF",
+                                            title: "",
+                                            headerBackTitleStyle: {
+                                                fontFamily: "FrankRuhlLibre_800ExtraBold",
+                                                fontSize: 22,
+                                            },
+                                }}
+                            />
                         </Stack>
                     </GestureHandlerRootView>
                 </ThemeProvider>

@@ -1,6 +1,7 @@
 export const BLUE = "#6ABDED";
 export const YELLOW = "#FFE44D";
 export const DARK = "#787c7e";
+export const GREEN = "#4CAF50";
 
 const Colors = {
     light: {

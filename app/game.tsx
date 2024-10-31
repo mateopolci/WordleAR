@@ -5,8 +5,7 @@ import { Stack, useRouter } from "expo-router";
 import OnScreenKeyboard from "@/components/OnScreenKeyboard";
 import { Ionicons } from "@expo/vector-icons";
 import { allWords } from "@/utils/allWords";
-import { words } from "@/utils/targetWord";
-import { set } from "date-fns";
+import { words } from "@/utils/targetWord2";
 
 //Debug
 const ROWS = 6;
@@ -28,10 +27,10 @@ const game = () => {
     const [yellowLetters, setYellowLetters] = useState<string[]>([]);
     const [grayLetters, setGrayLetters] = useState<string[]>([]);
 
-    //Palabra random
-    const [word, setWord] = useState<string>(words[Math.floor(Math.random() * words.length)]);
-    //Debug
-/*  const [word, setWord] = useState<string>('mateo');*/
+    //Palabra random (Descomentar para jugar)
+    /* const [word, setWord] = useState<string>(words[Math.floor(Math.random() * words.length)]); */
+    //Palabra mateo para testing
+    const [word, setWord] = useState<string>('mateo');
     const wordLetters = word.split('');
 
     const colStateRef = useRef(curCol);
@@ -73,10 +72,10 @@ const game = () => {
         setTimeout(() => {
             if (currentWord === word){
                 console.log("Ganaste");
-                //Todo: Mostrar mensaje de ganaste
+                router.push(`/end?win=true&word=${word}&gameField=${JSON.stringify(rows)}`);
             } else if (curRow + 1 >= rows.length){
                 console.log("Perdiste");
-                //Todo: Mostrar mensaje de perdiste
+                router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
             }
         }, 1500);
         setCurRow(curRow + 1);
