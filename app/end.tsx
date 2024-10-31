@@ -1,13 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "@/assets/images/wordlear-icon.svg";
 import Colors from "@/constants/Colors";
 import ThemedText from "@/components/ThemedText";
-import { SignedIn, SignedOut } from "@clerk/clerk-expo";
+import { SignedIn, SignedOut, useUser } from "@clerk/clerk-expo";
 import ThemedButton from "@/components/ThemedButton";
-import * as MailComposer from 'expo-mail-composer';
+import * as MailComposer from "expo-mail-composer";
+import { FIRESTORE_DB } from "@/utils/FirebaseConfig";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const end = () => {
     const { win, word, gameField } = useLocalSearchParams<{
@@ -17,11 +19,47 @@ const end = () => {
     }>();
 
     const router = useRouter();
-    const [userScore, setUserScore] = useState<any>({
-        played: 42,
-        wins: 2,
-        currentStreak: 1,
-    });
+    const [userScore, setUserScore] = useState<any>();
+    const { user } = useUser();
+
+    useEffect(() => {
+        if (user) {
+            updateHighScore();
+        }
+    }, [user]);
+
+    const updateHighScore = async () => {
+        if (!user) return;
+
+        const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
+        const docSnap = await getDoc(docRef);
+
+        let newScore = {
+            played: 1,
+            wins: win === "true" ? 1 : 0,
+            lastGame: win === "true" ? "win" : "loss",
+            currentStreak: win === "true" ? 1 : 0,
+        };
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+
+            newScore = {
+                played: data.played + 1,
+                wins: win === "true" ? data.wins + 1 : data.wins,
+                lastGame: win === "true" ? "win" : "loss",
+                currentStreak:
+                    win === "true" && data.lastGame === "win"
+                        ? data.currentStreak + 1
+                        : win === "true"
+                          ? 1
+                          : 0,
+            };
+        }
+
+        await setDoc(docRef, newScore);
+        setUserScore(newScore);
+    };
 
     const shareGame = () => {
         const game = JSON.parse(gameField!);
@@ -32,17 +70,14 @@ const end = () => {
             imageText.push([]);
             row.forEach((letter, colIndex) => {
                 if (wordLetters[colIndex] === letter) {
-                    imageText[rowIndex].push('🟦');
+                    imageText[rowIndex].push("🟦");
                 } else if (wordLetters.includes(letter)) {
-                    imageText[rowIndex].push('🟨');
+                    imageText[rowIndex].push("🟨");
                 } else {
-                    imageText[rowIndex].push('⬜');
+                    imageText[rowIndex].push("⬜");
                 }
             });
         });
-
-        //Debug borrar
-        console.log(imageText);
 
         const html = `
       <html>
@@ -70,27 +105,24 @@ const end = () => {
           <h1>WordleAR</h1>
           <div class="game">
            ${imageText
-             .map(
-               (row) =>
-                 `<div class="row">${row
-                   .map((cell) => `<div class="cell">${cell}</div>`)
-                   .join('')}</div>`
-             )
-             .join('')}
+               .map(
+                   (row) =>
+                       `<div class="row">${row
+                           .map((cell) => `<div class="cell">${cell}</div>`)
+                           .join("")}</div>`,
+               )
+               .join("")}
           </div>
         </body>
       </html>
     `;
 
-    MailComposer.composeAsync({
-      subject: `Acabo de jugar a WordleAR!`,
-      body: html,
-      isHtml: true,
-    });
-
-
+        MailComposer.composeAsync({
+            subject: `Acabo de jugar a WordleAR!`,
+            body: html,
+            isHtml: true,
+        });
     };
-
 
     const navigateRoot = () => {
         router.dismissAll();
@@ -119,6 +151,10 @@ const end = () => {
                     {win === "true" ? "¡Ganaste!" : "Gracias por jugar"}
                 </ThemedText>
 
+                <ThemedText style={styles.text}>
+                    {win === "false" && `La palabra era: ${word.toUpperCase()}`}
+                </ThemedText>
+
                 <SignedOut>
                     <ThemedText style={styles.text}>
                         ¿Querés ver tus rachas y estadísticas?
@@ -137,19 +173,19 @@ const end = () => {
                     <View style={styles.stats}>
                         <View>
                             <ThemedText style={styles.score}>
-                                {userScore.played}
+                                {userScore?.played}
                             </ThemedText>
                             <ThemedText>Jugadas</ThemedText>
                         </View>
                         <View>
                             <ThemedText style={styles.score}>
-                                {userScore.wins}
+                                {userScore?.wins}
                             </ThemedText>
                             <ThemedText>Ganadas</ThemedText>
                         </View>
                         <View>
                             <ThemedText style={styles.score}>
-                                {userScore.currentStreak}
+                                {userScore?.currentStreak}
                             </ThemedText>
                             <ThemedText>Racha</ThemedText>
                         </View>
@@ -164,14 +200,10 @@ const end = () => {
                     }}
                 />
 
-                <TouchableOpacity
-                    onPress={shareGame}
-                    style={styles.iconBtn}
-                >
+                <TouchableOpacity onPress={shareGame} style={styles.iconBtn}>
                     <Text style={styles.btnText}>Compartir</Text>
                     <Ionicons name="share-social" size={24} color="white" />
                 </TouchableOpacity>
-
             </View>
         </View>
     );
@@ -232,6 +264,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#4CAF50",
         borderRadius: 30,
-        width: '70%',
+        width: "70%",
     },
 });

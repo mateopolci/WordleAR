@@ -4,10 +4,12 @@ import { Link } from "expo-router";
 import { format } from "date-fns";
 import ThemedText from "@/components/ThemedText";
 import ThemedButton from "@/components/ThemedButton";
-import { SignedIn, SignedOut, useAuth } from '@clerk/clerk-expo';
+import { SignedIn, SignedOut, useAuth, useUser } from "@clerk/clerk-expo";
 
 export default function Index() {
     const { signOut } = useAuth();
+    const {user} = useUser();
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -20,6 +22,7 @@ export default function Index() {
                     Descubre la palabra de 5 letras.
                 </ThemedText>
             </View>
+
 
             <View style={styles.menu}>
                 <Link href={"/game"} asChild>
@@ -45,15 +48,18 @@ export default function Index() {
                     ></ThemedButton>
                 </SignedIn>
             </View>
+            
+            <SignedIn>
+                <View style={styles.header}>
+                    <ThemedText>Sesión iniciada como {user?.fullName}</ThemedText>
+                </View>
+            </SignedIn>
 
             <View style={styles.footer}>
                 <ThemedText style={styles.footerDate}>
                     {format(new Date(), "dd/MM/yyyy")}
                 </ThemedText>
                 <ThemedText style={styles.footerNumber}>Número 1151</ThemedText>
-                <ThemedText style={styles.footerText}>
-                    Desarrollado por: Mateo Polci Oriana Monaldi
-                </ThemedText>
             </View>
         </View>
     );
