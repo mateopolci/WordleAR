@@ -22,56 +22,56 @@
 
 ### Inicio (Sesión cerrada)
 
-<img src="./screenshots/IndexSignedOut.jpeg" width="200" />
+<img src="./screenshots/IndexSignedOut.jpeg" width="250" />
 
 ### Juego (Sesión cerrada)
 
-<img src="./screenshots/GameSignedOut.jpeg" width="200" />
+<img src="./screenshots/GameSignedOut.jpeg" width="250" />
 
 ### Cómo jugar
 
-<img src="./screenshots/HowToPlay.jpeg" width="200" />
+<img src="./screenshots/HowToPlay.jpeg" width="250" />
 
 ### Jugando (Sesión cerrada)
 
-<img src="./screenshots/PlayingSignedOut.jpeg" width="200" />
+<img src="./screenshots/PlayingSignedOut.jpeg" width="250" />
 
 ### Partida ganada (Sesión cerrada)
 
-<img src="./screenshots/PlayingSignedOutWin.jpeg" width="200" />
+<img src="./screenshots/PlayingSignedOutWin.jpeg" width="250" />
 
 ### Fin del juego (Sesión cerrada)
 
-<img src="./screenshots/EndGameSignedOut.jpeg" width="200" />
+<img src="./screenshots/EndGameSignedOut.jpeg" width="250" />
 
 ### Inicio de sesión
 
-<img src="./screenshots/Login.jpeg" width="200" />
+<img src="./screenshots/Login.jpeg" width="250" />
 
 ### Registrarse
 
-<img src="./screenshots/Register.jpeg" width="200" />
+<img src="./screenshots/Register.jpeg" width="250" />
 
 ### Verificación de mail
 
-<img src="./screenshots/RegisterMailVerification.jpeg" width="200" />
+<img src="./screenshots/RegisterMailVerification.jpeg" width="250" />
 
 ### Inicio (Sesión abierta)
 
-<img src="./screenshots/IndexSignedIn.jpeg" width="200" />
+<img src="./screenshots/IndexSignedIn.jpeg" width="250" />
 
 ### Jugando (Sesión abierta)
 
-<img src="./screenshots/PlayingSignedIn.jpeg" width="200" />
+<img src="./screenshots/PlayingSignedIn.jpeg" width="250" />
 
 ### Jugando con pistas (Sesión abierta)
 
-<img src="./screenshots/PlayingSignedInHints.jpeg" width="200" />
+<img src="./screenshots/PlayingSignedInHints.jpeg" width="250" />
 
 ### Fin del juego (Sesión abierta)
 
-<img src="./screenshots/EndGameSignedIn.jpeg" width="200" />
+<img src="./screenshots/EndGameSignedIn.jpeg" width="250" />
 
 ### Compartir partida
 
-<img src="./screenshots/ShareGame.jpeg" width="200" />
+<img src="./screenshots/ShareGame.jpeg" width="250" />
