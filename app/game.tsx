@@ -11,7 +11,7 @@ import Coin from '@/assets/images/coin.svg';
 import ThemedText from '@/components/ThemedText';
 import {SignedIn} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
-import {doc, getDoc} from 'firebase/firestore';
+import {doc, getDoc, onSnapshot} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
 
 //Modificar a 1 para debug
@@ -20,11 +20,28 @@ const ROWS = 6;
 const game = () => {
     const {user} = useUser();
     const [userScore, setUserScore] = useState<any>();
+    const unsubscribeRef = useRef<(() => void) | null>(null);
 
     useEffect(() => {
         if (user) {
+            // Inicialmente cargamos los datos
             fetchUserScore();
+            
+            // Configuramos el listener en tiempo real
+            const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
+            unsubscribeRef.current = onSnapshot(docRef, (doc) => {
+                if (doc.exists()) {
+                    setUserScore(doc.data());
+                }
+            });
         }
+
+        // Limpieza del listener cuando el componente se desmonta
+        return () => {
+            if (unsubscribeRef.current) {
+                unsubscribeRef.current();
+            }
+        };
     }, [user]);
 
     const fetchUserScore = async () => {
@@ -115,6 +132,7 @@ const game = () => {
         }
         return 'transparent';
     };
+
     const getBorderColor = (cell: string, rowIndex: number, cellIndex: number) => {
         if (curRow > rowIndex && cell !== '') {
             return getCellColor(cell, rowIndex, cellIndex);
@@ -182,7 +200,7 @@ const game = () => {
                             <SignedIn>
                                 <View style={styles.headerTitleContainerSignedIn}>
                                     <Coin width={18} height={18} />
-                                    <ThemedText style={styles.coinCounter}>{userScore?.coins}</ThemedText>
+                                    <ThemedText style={styles.coinCounter}>{userScore?.coins ?? 0}</ThemedText>
                                 </View>
                             </SignedIn>
                         </View>
@@ -270,10 +288,6 @@ const styles = StyleSheet.create({
     },
     keyboardContainer: {
         flex: 1,
-    },
-    priceText: {
-        fontSize: 12,
-        marginLeft: 3,
     },
     headerTitleContainerSignedIn: {
         flexDirection: 'row',

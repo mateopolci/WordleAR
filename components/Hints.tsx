@@ -1,13 +1,23 @@
-import {StyleSheet, TouchableOpacity, View, Text, useColorScheme} from 'react-native';
-import React, {useState} from 'react';
+import {StyleSheet, TouchableOpacity, View, Text, useColorScheme, Alert} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import {Ionicons} from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 import Coin from '@/assets/images/coin.svg';
+import {useUser} from '@clerk/clerk-expo';
+import {doc, getDoc, setDoc} from 'firebase/firestore';
+import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
 
 type HintsProps = {
     word: string;
     grayLetters: string[];
     onHintUsed: (hint: 'gray3' | 'gray5' | 'yellow1' | 'yellowAll', letters: string[]) => void;
+};
+
+const HINT_COSTS = {
+    hint1: 25,
+    hint2: 50,
+    hint3: 75,
+    hint4: 200
 };
 
 const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
@@ -18,9 +28,77 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
         hint3: false,
         hint4: false,
     });
+    const [userCoins, setUserCoins] = useState(0);
+    const {user} = useUser();
 
     const backgroundColor = Colors[colorScheme ?? 'light'].buttonBg;
     const textColor = Colors[colorScheme ?? 'light'].buttonText;
+
+    useEffect(() => {
+        if (user) {
+            fetchUserCoins();
+        }
+    }, [user]);
+
+    const fetchUserCoins = async () => {
+        if (!user) return;
+        const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            setUserCoins(docSnap.data().coins || 0);
+        }
+    };
+
+    const updateUserCoins = async (cost: number) => {
+        if (!user) return;
+        const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const currentData = docSnap.data();
+            await setDoc(docRef, {
+                ...currentData,
+                coins: currentData.coins - cost
+            });
+            setUserCoins(currentData.coins - cost);
+        }
+    };
+
+    const validateAndExecuteHint = async (
+        hintKey: 'hint1' | 'hint2' | 'hint3' | 'hint4',
+        cost: number,
+        hintFunction: () => string[]
+    ) => {
+        if (hintsUsed[hintKey]) return;
+
+        if (userCoins < cost) {
+            Alert.alert('Te faltan monedas', 'Consigue más monedas ganando partidas');
+            return;
+        }
+
+        const letters = hintFunction();
+        if (letters.length > 0) {
+            await updateUserCoins(cost);
+            
+            switch (hintKey) {
+                case 'hint1':
+                    onHintUsed('gray3', letters);
+                    break;
+                case 'hint2':
+                    onHintUsed('yellow1', letters);
+                    break;
+                case 'hint3':
+                    onHintUsed('gray5', letters);
+                    break;
+                case 'hint4':
+                    onHintUsed('yellowAll', letters);
+                    break;
+            }
+            
+            setHintsUsed(prev => ({...prev, [hintKey]: true}));
+        }
+    };
 
     const getAllAvailableLetters = () => {
         const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -41,38 +119,19 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
         return result;
     };
 
-    const hint1 = () => {
-        if (hintsUsed.hint1) return;
-        const letters = getRandomLetters(3);
-        if (letters.length === 3) {
-            onHintUsed('gray3', letters);
-            setHintsUsed((prev) => ({...prev, hint1: true}));
-        }
-    };
-
-    const hint2 = () => {
-        if (hintsUsed.hint2) return;
+    const hint1 = () => validateAndExecuteHint('hint1', HINT_COSTS.hint1, () => getRandomLetters(3));
+    
+    const hint2 = () => validateAndExecuteHint('hint2', HINT_COSTS.hint2, () => {
         const wordLetters = word.split('');
         const randomIndex = Math.floor(Math.random() * wordLetters.length);
-        onHintUsed('yellow1', [wordLetters[randomIndex]]);
-        setHintsUsed((prev) => ({...prev, hint2: true}));
-    };
-
-    const hint3 = () => {
-        if (hintsUsed.hint3) return;
-        const letters = getRandomLetters(5);
-        if (letters.length === 5) {
-            onHintUsed('gray5', letters);
-            setHintsUsed((prev) => ({...prev, hint3: true}));
-        }
-    };
-
-    const hint4 = () => {
-        if (hintsUsed.hint4) return;
-        const uniqueLetters = Array.from(new Set(word.split('')));
-        onHintUsed('yellowAll', uniqueLetters);
-        setHintsUsed((prev) => ({...prev, hint4: true}));
-    };
+        return [wordLetters[randomIndex]];
+    });
+    
+    const hint3 = () => validateAndExecuteHint('hint3', HINT_COSTS.hint3, () => getRandomLetters(5));
+    
+    const hint4 = () => validateAndExecuteHint('hint4', HINT_COSTS.hint4, () => {
+        return Array.from(new Set(word.split('')));
+    });
 
     return (
         <View style={styles.container}>
@@ -83,6 +142,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                         {
                             backgroundColor: hintsUsed.hint1 ? '#808080' : textColor,
                             borderColor: backgroundColor,
+                            opacity: userCoins < HINT_COSTS.hint1 ? 0.5 : 1
                         },
                     ]}
                     onPress={hint1}
@@ -91,7 +151,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 </TouchableOpacity>
                 <View style={styles.priceContainer}>
                     <Coin width={18} height={18} />
-                    <Text style={[styles.priceText, {color: backgroundColor}]}>25</Text>
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>{HINT_COSTS.hint1}</Text>
                 </View>
             </View>
 
@@ -102,6 +162,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                         {
                             backgroundColor: hintsUsed.hint2 ? '#808080' : textColor,
                             borderColor: backgroundColor,
+                            opacity: userCoins < HINT_COSTS.hint2 ? 0.5 : 1
                         },
                     ]}
                     onPress={hint2}
@@ -110,7 +171,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 </TouchableOpacity>
                 <View style={styles.priceContainer}>
                     <Coin width={18} height={18} />
-                    <Text style={[styles.priceText, {color: backgroundColor}]}>50</Text>
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>{HINT_COSTS.hint2}</Text>
                 </View>
             </View>
 
@@ -121,6 +182,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                         {
                             backgroundColor: hintsUsed.hint3 ? '#808080' : textColor,
                             borderColor: backgroundColor,
+                            opacity: userCoins < HINT_COSTS.hint3 ? 0.5 : 1
                         },
                     ]}
                     onPress={hint3}
@@ -129,7 +191,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 </TouchableOpacity>
                 <View style={styles.priceContainer}>
                     <Coin width={18} height={18} />
-                    <Text style={[styles.priceText, {color: backgroundColor}]}>75</Text>
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>{HINT_COSTS.hint3}</Text>
                 </View>
             </View>
 
@@ -140,6 +202,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                         {
                             backgroundColor: hintsUsed.hint4 ? '#808080' : textColor,
                             borderColor: backgroundColor,
+                            opacity: userCoins < HINT_COSTS.hint4 ? 0.5 : 1
                         },
                     ]}
                     onPress={hint4}
@@ -148,7 +211,7 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 </TouchableOpacity>
                 <View style={styles.priceContainer}>
                     <Coin width={18} height={18} />
-                    <Text style={[styles.priceText, {color: backgroundColor}]}>200</Text>
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>{HINT_COSTS.hint4}</Text>
                 </View>
             </View>
         </View>
