@@ -96,6 +96,12 @@ export default function RootLayout() {
                                             <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
                                         </TouchableOpacity>
                                     ),
+                                    headerTitle: () => (
+                                        <ThemedText style={styles.title}>
+                                            Wordle
+                                            <Text style={styles.titleHighlight}>AR</Text>
+                                        </ThemedText>
+                                    ),
                                 }}
                             />
                             <Stack.Screen

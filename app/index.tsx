@@ -17,7 +17,7 @@ export default function Index() {
                     Wordle
                     <Text style={styles.titleHighlight}>AR</Text>
                 </ThemedText>
-                <ThemedText style={styles.text}>Descubre la palabra en 6 intentos</ThemedText>
+                <ThemedText style={styles.text}>Descubre la palabra en 6 intentos o menos</ThemedText>
             </View>
 
             <View style={styles.menu}>
@@ -35,11 +35,18 @@ export default function Index() {
                 </SignedIn>
             </View>
 
-            <SignedIn>
-                <View style={styles.header}>
-                    <ThemedText>Bienvenido, {user?.fullName}.</ThemedText>
-                </View>
-            </SignedIn>
+            <View>
+                <SignedIn>
+                    <View style={styles.header}>
+                        <ThemedText style={styles.footer}>Bienvenido, {user?.fullName}.</ThemedText>
+                    </View>
+                </SignedIn>
+                <SignedOut>
+                    <View style={styles.header}>
+                        <ThemedText style={styles.footer}>Inicia sesión para ver tus estadísticas, ganar monedas y puntos.</ThemedText>
+                    </View>
+                </SignedOut>
+            </View>
         </View>
     );
 }
@@ -80,5 +87,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderWidth: 1,
         width: 150,
+    },
+    footer: {
+        fontSize: 16,
+        textAlign: 'center',
+        fontFamily: 'FrankRuhlLibre_500Medium',
     },
 });

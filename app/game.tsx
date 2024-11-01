@@ -7,6 +7,9 @@ import {Ionicons} from '@expo/vector-icons';
 import {allWords} from '@/utils/allWords';
 import {words} from '@/utils/targetWord2';
 import Hints from '@/components/Hints';
+import Coin from '@/assets/images/coin.svg';
+import ThemedText from '@/components/ThemedText';
+import {SignedIn, SignedOut} from '@clerk/clerk-expo';
 
 //Modificar a 1 para debug
 const ROWS = 6;
@@ -154,6 +157,16 @@ const game = () => {
                             <Ionicons name="settings-sharp" size={28} color={textColor} />
                         </View>
                     ),
+                    headerTitle: () => (
+                        <View>
+                            <SignedIn>
+                                <View style={styles.headerTitleContainerSignedIn}>
+                                    <Coin width={18} height={18} />
+                                    <ThemedText style={styles.coinCounter}>999</ThemedText>
+                                </View>
+                            </SignedIn>
+                        </View>
+                    ),
                 }}
             />
 
@@ -190,9 +203,11 @@ const game = () => {
             <View style={styles.keyboardContainer}>
                 <OnScreenKeyboard onKeyPressed={addKey} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
-            <View style={styles.hintsContainer}>
-                <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />
-            </View>
+            <SignedIn>
+                <View style={styles.hintsContainer}>
+                    <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />
+                </View>
+            </SignedIn>
         </View>
     );
 };
@@ -235,5 +250,17 @@ const styles = StyleSheet.create({
     },
     keyboardContainer: {
         flex: 1,
+    },
+    priceText: {
+        fontSize: 12,
+        marginLeft: 3,
+    },
+    headerTitleContainerSignedIn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    coinCounter: {
+        marginLeft: 5,
     },
 });
