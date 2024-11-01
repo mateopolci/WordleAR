@@ -18,32 +18,60 @@
 
 4. Escanear el código QR de la terminal cuando se inicie el servidor.
 
-## Screenshots
+## Capturas de pantalla
 
-![End game signed in](./screenshots/IndexSignedOut.jpeg)
+### Inicio (Sesión cerrada)
 
-![End game signed in](./screenshots/GameSignedOut.jpeg)
+<img src="./screenshots/IndexSignedOut.jpeg" width="200" />
 
-![End game signed in](./screenshots/HowToPlay.jpeg)
+### Juego (Sesión cerrada)
 
-![End game signed in](./screenshots/PlayingSignedOut.jpeg)
+<img src="./screenshots/GameSignedOut.jpeg" width="200" />
 
-![End game signed in](./screenshots/PlayingSignedOutWin.jpeg)
+### Cómo jugar
 
-![End game signed in](./screenshots/EndGameSignedOut.jpeg)
+<img src="./screenshots/HowToPlay.jpeg" width="200" />
 
-![End game signed in](./screenshots/Login.jpeg)
+### Jugando (Sesión cerrada)
 
-![End game signed in](./screenshots/Register.jpeg)
+<img src="./screenshots/PlayingSignedOut.jpeg" width="200" />
 
-![End game signed in](./screenshots/RegisterMailVerification.jpeg)
+### Partida ganada (Sesión cerrada)
 
-![End game signed in](./screenshots/IndexSignedIn.jpeg)
+<img src="./screenshots/PlayingSignedOutWin.jpeg" width="200" />
 
-![End game signed in](./screenshots/PlayingSignedIn.jpeg)
+### Fin del juego (Sesión cerrada)
 
-![End game signed in](./screenshots/PlayingSignedInHints.jpeg)
+<img src="./screenshots/EndGameSignedOut.jpeg" width="200" />
 
-![End game signed in](./screenshots/EndGameSignedIn.jpeg)
+### Inicio de sesión
 
-![End game signed in](./screenshots/ShareGame.jpeg)
+<img src="./screenshots/Login.jpeg" width="200" />
+
+### Registrarse
+
+<img src="./screenshots/Register.jpeg" width="200" />
+
+### Verificación de mail
+
+<img src="./screenshots/RegisterMailVerification.jpeg" width="200" />
+
+### Inicio (Sesión abierta)
+
+<img src="./screenshots/IndexSignedIn.jpeg" width="200" />
+
+### Jugando (Sesión abierta)
+
+<img src="./screenshots/PlayingSignedIn.jpeg" width="200" />
+
+### Jugando con pistas (Sesión abierta)
+
+<img src="./screenshots/PlayingSignedInHints.jpeg" width="200" />
+
+### Fin del juego (Sesión abierta)
+
+<img src="./screenshots/EndGameSignedIn.jpeg" width="200" />
+
+### Compartir partida
+
+<img src="./screenshots/ShareGame.jpeg" width="200" />
