@@ -81,6 +81,41 @@ export default function RootLayout() {
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen
+                                name="howtoplay"
+                                options={{
+                                    presentation: 'modal',
+                                    headerBackTitle: '',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                    title: '',
+                                    headerBackTitleStyle: {
+                                        fontFamily: 'FrankRuhlLibre_800ExtraBold',
+                                        fontSize: 22,
+                                    },
+                                    headerLeft: () => (
+                                        <TouchableOpacity onPress={() => router.back()}>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
+                                        </TouchableOpacity>
+                                    ),
+                                }}
+                            />
+                            <Stack.Screen
+                                name="leaderboard"
+                                options={{
+                                    headerBackTitle: '',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                    title: 'Leaderboard',
+                                    headerBackTitleStyle: {
+                                        fontFamily: 'FrankRuhlLibre_800ExtraBold',
+                                        fontSize: 22,
+                                    },
+                                    headerLeft: () => (
+                                        <TouchableOpacity onPress={() => router.back()}>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
+                                        </TouchableOpacity>
+                                    ),
+                                }}
+                            />
+                            <Stack.Screen
                                 name="game"
                                 options={{
                                     headerBackTitle: 'Wordle',

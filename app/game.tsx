@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, useColorScheme, Alert} from 'react-native';
 import {useRef, useState} from 'react';
 import Colors from '@/constants/Colors';
-import {Stack, useRouter} from 'expo-router';
+import {Link, Stack, useRouter} from 'expo-router';
 import OnScreenKeyboard from '@/components/OnScreenKeyboard';
 import {Ionicons} from '@expo/vector-icons';
 import {allWords} from '@/utils/allWords';
@@ -145,8 +145,12 @@ const game = () => {
                 options={{
                     headerRight: () => (
                         <View style={styles.headerIcon}>
-                            <Ionicons name="help-circle-outline" size={28} color={textColor} />
-                            <Ionicons name="podium-outline" size={28} color={textColor} />
+                            <Link href={'/howtoplay'}>
+                                <Ionicons name="help-circle-outline" size={28} color={textColor} />
+                            </Link>
+                            <Link href={'/leaderboard'}>
+                                <Ionicons name="podium-outline" size={28} color={textColor} />
+                            </Link>
                             <Ionicons name="settings-sharp" size={28} color={textColor} />
                         </View>
                     ),
