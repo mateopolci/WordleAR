@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, useColorScheme, Alert} from 'react-native';
-import {useRef, useState} from 'react';
+import {useRef, useState, useEffect} from 'react';
 import Colors from '@/constants/Colors';
 import {Link, Stack, useRouter} from 'expo-router';
 import OnScreenKeyboard from '@/components/OnScreenKeyboard';
@@ -9,12 +9,34 @@ import {words} from '@/utils/targetWord2';
 import Hints from '@/components/Hints';
 import Coin from '@/assets/images/coin.svg';
 import ThemedText from '@/components/ThemedText';
-import {SignedIn, SignedOut} from '@clerk/clerk-expo';
+import {SignedIn} from '@clerk/clerk-expo';
+import {useUser} from '@clerk/clerk-expo';
+import {doc, getDoc} from 'firebase/firestore';
+import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
 
 //Modificar a 1 para debug
 const ROWS = 6;
 
 const game = () => {
+    const {user} = useUser();
+    const [userScore, setUserScore] = useState<any>();
+
+    useEffect(() => {
+        if (user) {
+            fetchUserScore();
+        }
+    }, [user]);
+
+    const fetchUserScore = async () => {
+        if (!user) return;
+        const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            setUserScore(docSnap.data());
+        }
+    };
+    
     const colorScheme = useColorScheme();
     const backgroundColor = Colors[colorScheme ?? 'light'].gameBg;
     const textColor = Colors[colorScheme ?? 'light'].text;
@@ -72,10 +94,8 @@ const game = () => {
 
         setTimeout(() => {
             if (currentWord === word) {
-                console.log('Ganaste');
                 router.push(`/end?win=true&word=${word}&gameField=${JSON.stringify(rows)}`);
             } else if (curRow + 1 >= rows.length) {
-                console.log('Perdiste');
                 router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
             }
         }, 1500);
@@ -162,7 +182,7 @@ const game = () => {
                             <SignedIn>
                                 <View style={styles.headerTitleContainerSignedIn}>
                                     <Coin width={18} height={18} />
-                                    <ThemedText style={styles.coinCounter}>999</ThemedText>
+                                    <ThemedText style={styles.coinCounter}>{userScore?.coins}</ThemedText>
                                 </View>
                             </SignedIn>
                         </View>

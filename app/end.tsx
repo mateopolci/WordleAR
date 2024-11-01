@@ -39,6 +39,8 @@ const end = () => {
             wins: win === 'true' ? 1 : 0,
             lastGame: win === 'true' ? 'win' : 'loss',
             currentStreak: win === 'true' ? 1 : 0,
+            totalPoints: win === 'true' ? 10 : 0,
+            coins: win === 'true' ? 10 : 0,
         };
 
         if (docSnap.exists()) {
@@ -49,8 +51,11 @@ const end = () => {
                 wins: win === 'true' ? data.wins + 1 : data.wins,
                 lastGame: win === 'true' ? 'win' : 'loss',
                 currentStreak: win === 'true' && data.lastGame === 'win' ? data.currentStreak + 1 : win === 'true' ? 1 : 0,
+                totalPoints: win === 'true' ? (data.lastGame === 'win' ? data.totalPoints + 20 : data.totalPoints + 10) : data.totalPoints,
+                coins: win === 'true' ? (data.lastGame === 'win' ? data.coins + 20 : data.coins + 10) : data.coins,
             };
         }
+        /* coins: win === 'true' && data.lastGame === 'win' ? data.coins + 20 : data.coins, */
 
         await setDoc(docRef, newScore);
         setUserScore(newScore);
@@ -59,25 +64,23 @@ const end = () => {
     const shareGame = () => {
         const game = JSON.parse(gameField!);
         const imageText: string[][] = [];
-    
-        const wordLetters = word.split("");
+
+        const wordLetters = word.split('');
         game.forEach((row: string[], rowIndex: number) => {
             imageText.push([]);
             row.forEach((letter, colIndex) => {
                 if (wordLetters[colIndex] === letter) {
-                    imageText[rowIndex].push("🟦");
+                    imageText[rowIndex].push('🟦');
                 } else if (wordLetters.includes(letter)) {
-                    imageText[rowIndex].push("🟨");
+                    imageText[rowIndex].push('🟨');
                 } else {
-                    imageText[rowIndex].push("⬜");
+                    imageText[rowIndex].push('⬜');
                 }
             });
         });
-    
-        const textRepresentation = `Esta fue mi partida en WordleAR, ¿Podés superarme?\n\n${imageText
-            .map(row => row.join(" "))
-            .join("\n")}`;
-    
+
+        const textRepresentation = `Esta fue mi partida en WordleAR, ¿Podés superarme?\n\n${imageText.map((row) => row.join(' ')).join('\n')}`;
+
         MailComposer.composeAsync({
             subject: `Acabo de jugar a WordleAR!`,
             body: textRepresentation,
@@ -117,7 +120,7 @@ const end = () => {
                 </SignedOut>
 
                 <SignedIn>
-                    <ThemedText style={styles.text}>Estadisticas</ThemedText>
+                    <ThemedText style={styles.text}>Resumen de tus logros</ThemedText>
                     <View style={styles.stats}>
                         <View>
                             <ThemedText style={styles.score}>{userScore?.played}</ThemedText>
@@ -130,6 +133,14 @@ const end = () => {
                         <View>
                             <ThemedText style={styles.score}>{userScore?.currentStreak}</ThemedText>
                             <ThemedText>Racha</ThemedText>
+                        </View>
+                        <View>
+                            <ThemedText style={styles.score}>{userScore?.coins}</ThemedText>
+                            <ThemedText>Monedas</ThemedText>
+                        </View>
+                        <View>
+                            <ThemedText style={styles.score}>{userScore?.totalPoints}</ThemedText>
+                            <ThemedText>Puntos</ThemedText>
                         </View>
                     </View>
                 </SignedIn>
