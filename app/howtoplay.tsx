@@ -8,6 +8,7 @@ import Coin from '@/assets/images/coin.svg';
 const HowToPlay = () => {
     const colorScheme = useColorScheme();
     const backgroundColor = Colors[colorScheme ?? 'light'].buttonBg;
+    const textColor = Colors[colorScheme ?? 'light'].buttonText;
 
     return (
         <ScrollView style={styles.container}>
@@ -31,17 +32,17 @@ const HowToPlay = () => {
                 <View>
                     <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Colores de celda / teclado</ThemedText>
 
-                    <View style={[styles.itemContainer, {marginLeft: 12}]}>
+                    <View style={[styles.itemContainer, {marginLeft: 13}]}>
                         <View style={[styles.colorBox, {backgroundColor: '#6ABDED'}]} />
                         <ThemedText style={styles.itemText}> La letra está en el lugar correcto.</ThemedText>
                     </View>
 
-                    <View style={[styles.itemContainer, {marginLeft: 12}]}>
+                    <View style={[styles.itemContainer, {marginLeft: 13}]}>
                         <View style={[styles.colorBox, {backgroundColor: '#FFE44D'}]} />
                         <ThemedText style={styles.itemText}> La letra va en otro lugar.</ThemedText>
                     </View>
 
-                    <View style={[styles.itemContainer, {marginLeft: 12}]}>
+                    <View style={[styles.itemContainer, {marginLeft: 13}]}>
                         <View style={[styles.colorBox, {backgroundColor: '#787c7e'}]} />
                         <ThemedText style={styles.itemText}> La letra no va.</ThemedText>
                     </View>
@@ -62,7 +63,7 @@ const HowToPlay = () => {
                     <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Ayudas</ThemedText>
                     <View style={[styles.itemContainer, {marginVertical: 15}]}>
                         <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor}]}>
+                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
                                 <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
                             </View>
                             <View style={styles.priceContainer}>
@@ -74,7 +75,7 @@ const HowToPlay = () => {
                     </View>
                     <View style={[styles.itemContainer, {marginVertical: 15}]}>
                         <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor}]}>
+                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
                                 <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
                             </View>
                             <View style={styles.priceContainer}>
@@ -86,7 +87,7 @@ const HowToPlay = () => {
                     </View>
                     <View style={[styles.itemContainer, {marginVertical: 15}]}>
                         <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor}]}>
+                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
                                 <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
                             </View>
                             <View style={styles.priceContainer}>
@@ -98,7 +99,7 @@ const HowToPlay = () => {
                     </View>
                     <View style={[styles.itemContainer, {marginVertical: 15}]}>
                         <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor}]}>
+                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
                                 <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
                             </View>
                             <View style={styles.priceContainer}>

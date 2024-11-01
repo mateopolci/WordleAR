@@ -11,5 +11,5 @@
 2. Iniciar la app
 
    ```bash
-    npx expo start
+   npx expo start
    ```
