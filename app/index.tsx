@@ -1,13 +1,31 @@
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleSheet, Alert} from 'react-native';
 import Icon from '@/assets/images/wordlear-icon.svg';
-import {Link} from 'expo-router';
+import {Link, useRouter} from 'expo-router';
 import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
 import {SignedIn, SignedOut, useAuth, useUser} from '@clerk/clerk-expo';
+import { useState } from 'react';
 
 export default function Index() {
     const {signOut} = useAuth();
     const {user} = useUser();
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSignOut = async () => {
+        setIsLoading(true);
+        try {
+            await signOut();
+        } catch (error) {
+            console.error('Error al cerrar sesión:', error);
+            Alert.alert(
+                "Error",
+                "Hubo un problema al cerrar sesión. Por favor, inténtalo de nuevo."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -31,7 +49,12 @@ export default function Index() {
                     </Link>
                 </SignedOut>
                 <SignedIn>
-                    <ThemedButton onPress={() => signOut()} title="Cerrar Sesión" style={styles.btn}></ThemedButton>
+                    <ThemedButton 
+                        onPress={handleSignOut} 
+                        title={isLoading ? "Cerrando..." : "Cerrar Sesión"} 
+                        style={styles.btn}
+                        disabled={isLoading}
+                    ></ThemedButton>
                 </SignedIn>
             </View>
 
@@ -43,7 +66,9 @@ export default function Index() {
                 </SignedIn>
                 <SignedOut>
                     <View style={styles.header}>
-                        <ThemedText style={styles.footer}>Inicia sesión para ver tus estadísticas, ganar monedas y puntos.</ThemedText>
+                        <ThemedText style={styles.footer}>
+                            Inicia sesión para ver tus estadísticas, ganar monedas y puntos.
+                        </ThemedText>
                     </View>
                 </SignedOut>
             </View>

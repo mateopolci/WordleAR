@@ -24,10 +24,8 @@ const game = () => {
 
     useEffect(() => {
         if (user) {
-            // Inicialmente cargamos los datos
             fetchUserScore();
             
-            // Configuramos el listener en tiempo real
             const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
             unsubscribeRef.current = onSnapshot(docRef, (doc) => {
                 if (doc.exists()) {
@@ -36,7 +34,6 @@ const game = () => {
             });
         }
 
-        // Limpieza del listener cuando el componente se desmonta
         return () => {
             if (unsubscribeRef.current) {
                 unsubscribeRef.current();
