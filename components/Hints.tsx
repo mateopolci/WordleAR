@@ -2,6 +2,7 @@ import {StyleSheet, TouchableOpacity, View, Text, useColorScheme} from 'react-na
 import React, {useState} from 'react';
 import {Ionicons} from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
+import Coin from '@/assets/images/coin.svg';
 
 type HintsProps = {
     word: string;
@@ -88,7 +89,10 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 >
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
-                <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$25</Text>
+                <View style={styles.priceContainer}>
+                    <Coin width={18} height={18} />
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>25</Text>
+                </View>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -104,7 +108,10 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 >
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
-                <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$50</Text>
+                <View style={styles.priceContainer}>
+                    <Coin width={18} height={18} />
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>50</Text>
+                </View>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -120,7 +127,10 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 >
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
-                <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$75</Text>
+                <View style={styles.priceContainer}>
+                    <Coin width={18} height={18} />
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>75</Text>
+                </View>
             </View>
 
             <View style={styles.buttonContainer}>
@@ -136,7 +146,10 @@ const Hints = ({word, grayLetters, onHintUsed}: HintsProps) => {
                 >
                     <Ionicons name="bulb-outline" size={30} color={backgroundColor} />
                 </TouchableOpacity>
-                <Text style={[styles.priceText, {color: textColor, backgroundColor: backgroundColor}]}>$200</Text>
+                <View style={styles.priceContainer}>
+                    <Coin width={18} height={18} />
+                    <Text style={[styles.priceText, {color: backgroundColor}]}>200</Text>
+                </View>
             </View>
         </View>
     );
@@ -148,7 +161,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 40,
-        paddingBottom: 10,
+        paddingTop: 10,
+        paddingBottom: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -167,13 +181,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'relative',
     },
-    priceText: {
+    priceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
         position: 'absolute',
-        bottom: -13,
-        right: -12,
+        bottom: -25,
+    },
+    priceText: {
         fontSize: 12,
-        padding: 3,
-        borderRadius: 10,
-        overflow: 'hidden',
+        marginLeft: 3,
     },
 });

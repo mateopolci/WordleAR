@@ -1,7 +1,6 @@
-import {Text, View, StyleSheet, StatusBar} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import Icon from '@/assets/images/wordlear-icon.svg';
 import {Link} from 'expo-router';
-import {format} from 'date-fns';
 import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
 import {SignedIn, SignedOut, useAuth, useUser} from '@clerk/clerk-expo';
@@ -18,7 +17,7 @@ export default function Index() {
                     Wordle
                     <Text style={styles.titleHighlight}>AR</Text>
                 </ThemedText>
-                <ThemedText style={styles.text}>Descubre la palabra de 5 letras.</ThemedText>
+                <ThemedText style={styles.text}>Descubre la palabra en 6 intentos</ThemedText>
             </View>
 
             <View style={styles.menu}>
@@ -38,7 +37,7 @@ export default function Index() {
 
             <SignedIn>
                 <View style={styles.header}>
-                    <ThemedText>Bienvenido {user?.fullName}</ThemedText>
+                    <ThemedText>Bienvenido, {user?.fullName}.</ThemedText>
                 </View>
             </SignedIn>
         </View>

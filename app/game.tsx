@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
     hintsContainer: {
-        flex: 0.5,
+        flex: 0.6,
     },
     keyboardContainer: {
         flex: 1,
