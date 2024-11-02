@@ -72,11 +72,11 @@ export default function RootLayout() {
                                             <Text style={styles.titleHighlight}>AR</Text>
                                         </ThemedText>
                                     ),
-                                    headerLeft: () => (
+                                    headerLeft: Platform.OS !== 'android' ? () => (
                                         <TouchableOpacity onPress={() => router.back()}>
-                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
                                         </TouchableOpacity>
-                                    ),
+                                    ) : undefined,
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen
@@ -89,11 +89,11 @@ export default function RootLayout() {
                                             <Text style={styles.titleHighlight}>AR</Text>
                                         </ThemedText>
                                     ),
-                                    headerLeft: () => (
+                                    headerLeft: Platform.OS !== 'android' ? () => (
                                         <TouchableOpacity onPress={() => router.back()}>
-                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
                                         </TouchableOpacity>
-                                    ),
+                                    ) : undefined,
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen
@@ -107,11 +107,11 @@ export default function RootLayout() {
                                         fontFamily: 'FrankRuhlLibre_800ExtraBold',
                                         fontSize: 22,
                                     },
-                                    headerLeft: () => (
+                                    headerLeft: Platform.OS !== 'android' ? () => (
                                         <TouchableOpacity onPress={() => router.back()}>
-                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'}></Ionicons>
+                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
                                         </TouchableOpacity>
-                                    ),
+                                    ) : undefined,
                                     headerTitle: () => (
                                         <ThemedText style={styles.title}>
                                             Wordle
