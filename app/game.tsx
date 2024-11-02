@@ -183,13 +183,12 @@ const game = () => {
                 options={{
                     headerRight: () => (
                         <View style={styles.headerIcon}>
-                            <Link href={'/howtoplay'}>
-                                <Ionicons name="help-circle-outline" size={28} color={textColor} />
-                            </Link>
                             <Link href={'/leaderboard'}>
                                 <Ionicons name="podium-outline" size={28} color={textColor} />
                             </Link>
-                            <Ionicons name="settings-sharp" size={28} color={textColor} />
+                            <Link href={'/howtoplay'}>
+                                <Ionicons name="help-circle-outline" size={28} color={textColor} />
+                            </Link>
                         </View>
                     ),
                     headerTitle: () => (
