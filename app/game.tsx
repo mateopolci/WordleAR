@@ -13,6 +13,7 @@ import {SignedIn} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
 import {doc, getDoc, onSnapshot} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, ZoomIn } from 'react-native-reanimated';
 
 //Modificar a 1 para debug
 const ROWS = 6;
@@ -82,11 +83,11 @@ const game = () => {
     const checkWord = () => {
         const currentWord = rows[curRow].join('');
         if (currentWord.length < word.length) {
-            Alert.alert('Cuidado', 'La palabra debe tener 5 letras');
+            shakeRow();
             return;
         }
         if (!allWords.includes(currentWord)) {
-            Alert.alert('Cuidado', `${currentWord.toUpperCase()} no es una palabra válida`);
+            shakeRow();
             return;
         }
         const newBlue: string[] = [];
@@ -177,6 +178,27 @@ const game = () => {
         }
     };
 
+    const offsetShakes = Array.from({ length: ROWS}, () => useSharedValue(0));
+
+    const rowStyles = Array.from({length: ROWS}, (_, index) => 
+        useAnimatedStyle(() => {
+            return {
+                transform: [{translateX: offsetShakes[index].value}]
+            }
+        })
+    );
+
+    const shakeRow = () => {
+        const TIME = 70;
+        const OFFSET = 10;
+
+        offsetShakes[curRow].value = withSequence(
+            withTiming(-OFFSET, {duration: TIME/2}),
+            withRepeat(withTiming(OFFSET, {duration: TIME}), 4, true),
+            withTiming(0, {duration: TIME/2}),
+        );
+    }
+
     return (
         <View style={[styles.container, {backgroundColor}]}>
             <Stack.Screen
@@ -206,9 +228,10 @@ const game = () => {
 
             <View style={styles.gameField}>
                 {rows.map((row, rowIndex) => (
-                    <View style={styles.gameFieldRow} key={`row-${rowIndex}`}>
+                    <Animated.View style={[styles.gameFieldRow, rowStyles[rowIndex]]} key={`row-${rowIndex}`}>
                         {row.map((cell, cellIndex) => (
-                            <View
+                            <Animated.View
+                            entering={ZoomIn.delay(50 * cellIndex)}
                                 style={[
                                     styles.cell,
                                     {
@@ -228,9 +251,9 @@ const game = () => {
                                 >
                                     {cell}
                                 </Text>
-                            </View>
+                            </Animated.View>
                         ))}
-                    </View>
+                    </Animated.View>
                 ))}
             </View>
 

@@ -5,6 +5,7 @@ import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
 import {SignedIn, SignedOut, useAuth, useUser} from '@clerk/clerk-expo';
 import { useState } from 'react';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function Index() {
     const {signOut} = useAuth();
@@ -28,7 +29,7 @@ export default function Index() {
     };
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={styles.container} entering={FadeInDown}>
             <View style={styles.header}>
                 <Icon width={100} height={70} />
                 <ThemedText style={styles.title}>
@@ -72,7 +73,7 @@ export default function Index() {
                     </View>
                 </SignedOut>
             </View>
-        </View>
+        </Animated.View>
     );
 }
 
