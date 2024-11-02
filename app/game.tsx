@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, useColorScheme, Alert} from 'react-native';
+import {StyleSheet, Text, View, useColorScheme, Alert, Platform} from 'react-native';
 import {useRef, useState, useEffect} from 'react';
 import Colors from '@/constants/Colors';
 import {Link, Stack, useRouter} from 'expo-router';
@@ -245,6 +245,29 @@ const game = () => {
             setBorderColor(cell, curRow - 1, cellIndex);
         });
     }, [curRow]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                addKey('ENTER');
+            } else if (event.key === 'Backspace') {
+                addKey('BACKSPACE');
+            } else if (event.key.length === 1) {
+                addKey(event.key);
+            }
+        };
+        
+        if (Platform.OS === 'web') {
+            document.addEventListener('keydown', handleKeyDown);
+        }
+
+        return () => {
+            if (Platform.OS === 'web') {
+                document.removeEventListener('keydown', handleKeyDown);
+            }
+        }
+
+    }, [curCol]);
 
     return (
         <View style={[styles.container, {backgroundColor}]}>
