@@ -11,103 +11,105 @@ const HowToPlay = () => {
     const textColor = Colors[colorScheme ?? 'light'].buttonText;
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.titleContainer}>
-                <ThemedText style={styles.title}>Cómo jugar</ThemedText>
-            </View>
-
-            <View>
-                <ThemedText style={styles.subTitle}>Descubre la palabra en 6 intentos o menos</ThemedText>
-            </View>
-
-            <View>
-                <View style={styles.listItem}>
-                    <ThemedText style={styles.bullet}>•</ThemedText>
-                    <ThemedText style={[styles.itemText, {marginBottom: 10}]}>Cada intento de adivinanza debe ser una palabra de 5 letras que exista.</ThemedText>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.contentContainer}>
+                <View style={styles.titleContainer}>
+                    <ThemedText style={styles.title}>Cómo jugar</ThemedText>
                 </View>
-                <View style={styles.listItem}>
-                    <ThemedText style={styles.bullet}>•</ThemedText>
-                    <ThemedText style={styles.itemText}>El color de las celdas va a cambiar para mostrar que tan cerca estuviste de adivinar.</ThemedText>
-                </View>
+
                 <View>
-                    <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Colores de celda / teclado</ThemedText>
-
-                    <View style={[styles.itemContainer, {marginLeft: 13}]}>
-                        <View style={[styles.colorBox, {backgroundColor: '#6ABDED'}]} />
-                        <ThemedText style={styles.itemText}> La letra está en el lugar correcto.</ThemedText>
-                    </View>
-
-                    <View style={[styles.itemContainer, {marginLeft: 13}]}>
-                        <View style={[styles.colorBox, {backgroundColor: '#FFE44D'}]} />
-                        <ThemedText style={styles.itemText}> La letra va en otro lugar.</ThemedText>
-                    </View>
-
-                    <View style={[styles.itemContainer, {marginLeft: 13}]}>
-                        <View style={[styles.colorBox, {backgroundColor: '#787c7e'}]} />
-                        <ThemedText style={styles.itemText}> La letra no va.</ThemedText>
-                    </View>
+                    <ThemedText style={styles.subTitle}>Descubre la palabra en 6 intentos o menos</ThemedText>
                 </View>
-                <View>
-                    <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Puntuación</ThemedText>
 
+                <View>
                     <View style={styles.listItem}>
                         <ThemedText style={styles.bullet}>•</ThemedText>
-                        <ThemedText style={styles.itemText}>Ganar partida: 10 puntos / 10 monedas.</ThemedText>
+                        <ThemedText style={[styles.itemText, {marginBottom: 10}]}>Cada intento de adivinanza debe ser una palabra de 5 letras que exista.</ThemedText>
                     </View>
                     <View style={styles.listItem}>
                         <ThemedText style={styles.bullet}>•</ThemedText>
-                        <ThemedText style={styles.itemText}>Ganar en racha: 20 puntos / 20 monedas.</ThemedText>
+                        <ThemedText style={styles.itemText}>El color de las celdas va a cambiar para mostrar que tan cerca estuviste de adivinar.</ThemedText>
                     </View>
-                </View>
-                <View style={[{marginBottom: 50}]}>
-                    <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Ayudas</ThemedText>
-                    <View style={[styles.itemContainer, {marginVertical: 15}]}>
-                        <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
-                                <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
-                            </View>
-                            <View style={styles.priceContainer}>
-                                <Coin width={9} height={9} />
-                                <Text style={[styles.priceText, {color: backgroundColor}]}>25</Text>
-                            </View>
+                    <View>
+                        <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Colores de celda / teclado</ThemedText>
+
+                        <View style={[styles.itemContainer, {marginLeft: 13}]}>
+                            <View style={[styles.colorBox, {backgroundColor: '#6ABDED'}]} />
+                            <ThemedText style={styles.itemText}> La letra está en el lugar correcto.</ThemedText>
                         </View>
-                        <ThemedText style={styles.itemText}>Elimina 3 letras.</ThemedText>
+
+                        <View style={[styles.itemContainer, {marginLeft: 13}]}>
+                            <View style={[styles.colorBox, {backgroundColor: '#FFE44D'}]} />
+                            <ThemedText style={styles.itemText}> La letra va en otro lugar.</ThemedText>
+                        </View>
+
+                        <View style={[styles.itemContainer, {marginLeft: 13}]}>
+                            <View style={[styles.colorBox, {backgroundColor: '#787c7e'}]} />
+                            <ThemedText style={styles.itemText}> La letra no va.</ThemedText>
+                        </View>
                     </View>
-                    <View style={[styles.itemContainer, {marginVertical: 15}]}>
-                        <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
-                                <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
-                            </View>
-                            <View style={styles.priceContainer}>
-                                <Coin width={9} height={9} />
-                                <Text style={[styles.priceText, {color: backgroundColor}]}>50</Text>
-                            </View>
+                    <View>
+                        <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Puntuación</ThemedText>
+
+                        <View style={styles.listItem}>
+                            <ThemedText style={styles.bullet}>•</ThemedText>
+                            <ThemedText style={styles.itemText}>Ganar partida: 10 puntos / 10 monedas.</ThemedText>
                         </View>
-                        <ThemedText style={styles.itemText}>Muestra una letra correcta.</ThemedText>
+                        <View style={styles.listItem}>
+                            <ThemedText style={styles.bullet}>•</ThemedText>
+                            <ThemedText style={styles.itemText}>Ganar en racha: 20 puntos / 20 monedas.</ThemedText>
+                        </View>
                     </View>
-                    <View style={[styles.itemContainer, {marginVertical: 15}]}>
-                        <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
-                                <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
+                    <View style={[{marginBottom: 50}]}>
+                        <ThemedText style={[styles.subTitle, {paddingBottom: 10}]}>Ayudas</ThemedText>
+                        <View style={[styles.itemContainer, {marginVertical: 15}]}>
+                            <View style={styles.buttonContainer}>
+                                <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
+                                    <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
+                                </View>
+                                <View style={styles.priceContainer}>
+                                    <Coin width={9} height={9} />
+                                    <Text style={[styles.priceText, {color: backgroundColor}]}>25</Text>
+                                </View>
                             </View>
-                            <View style={styles.priceContainer}>
-                                <Coin width={9} height={9} />
-                                <Text style={[styles.priceText, {color: backgroundColor}]}>75</Text>
-                            </View>
+                            <ThemedText style={styles.itemText}>Elimina 3 letras.</ThemedText>
                         </View>
-                        <ThemedText style={styles.itemText}>Eliminar 5 letras.</ThemedText>
-                    </View>
-                    <View style={[styles.itemContainer, {marginVertical: 15}]}>
-                        <View style={styles.buttonContainer}>
-                            <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
-                                <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
+                        <View style={[styles.itemContainer, {marginVertical: 15}]}>
+                            <View style={styles.buttonContainer}>
+                                <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
+                                    <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
+                                </View>
+                                <View style={styles.priceContainer}>
+                                    <Coin width={9} height={9} />
+                                    <Text style={[styles.priceText, {color: backgroundColor}]}>50</Text>
+                                </View>
                             </View>
-                            <View style={styles.priceContainer}>
-                                <Coin width={9} height={9} />
-                                <Text style={[styles.priceText, {color: backgroundColor}]}>200</Text>
-                            </View>
+                            <ThemedText style={styles.itemText}>Elimina 3 letras.</ThemedText>
                         </View>
-                        <ThemedText style={styles.itemText}>Muestra todas las letras correctas.</ThemedText>
+                        <View style={[styles.itemContainer, {marginVertical: 15}]}>
+                            <View style={styles.buttonContainer}>
+                                <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
+                                    <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
+                                </View>
+                                <View style={styles.priceContainer}>
+                                    <Coin width={9} height={9} />
+                                    <Text style={[styles.priceText, {color: backgroundColor}]}>75</Text>
+                                </View>
+                            </View>
+                            <ThemedText style={styles.itemText}>Elimina 3 letras.</ThemedText>
+                        </View>
+                        <View style={[styles.itemContainer, {marginVertical: 15}]}>
+                            <View style={styles.buttonContainer}>
+                                <View style={[styles.helpBtn, {borderColor: backgroundColor, backgroundColor: textColor}]}>
+                                    <Ionicons name="bulb-outline" size={15} color={backgroundColor} />
+                                </View>
+                                <View style={styles.priceContainer}>
+                                    <Coin width={9} height={9} />
+                                    <Text style={[styles.priceText, {color: backgroundColor}]}>200</Text>
+                                </View>
+                            </View>
+                            <ThemedText style={styles.itemText}>Elimina 3 letras.</ThemedText>
+                        </View>
                     </View>
                 </View>
             </View>
@@ -118,10 +120,13 @@ const HowToPlay = () => {
 export default HowToPlay;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    scrollContainer: {
+        flexGrow: 1,
         paddingHorizontal: 20,
-        gap: 20,
+    },
+    contentContainer: {
+        maxWidth: 600,
+        alignSelf: 'center',
     },
     titleContainer: {
         alignItems: 'center',
