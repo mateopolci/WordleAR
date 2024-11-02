@@ -13,7 +13,7 @@ import {SignedIn} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
 import {doc, getDoc, onSnapshot} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
-import Animated, {FadeIn, Layout, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming, ZoomIn} from 'react-native-reanimated';
+import Animated, {FadeIn, Layout, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming} from 'react-native-reanimated';
 
 //Modificar a 1 para debug
 const ROWS = 6;
@@ -314,7 +314,7 @@ const game = () => {
                     >
                         {row.map((cell, cellIndex) => (
                             <Animated.View
-                                entering={FadeIn.duration(300).delay(50 * (cellIndex + rowIndex * 5))}
+                                entering={FadeIn.duration(300).delay(25 * (cellIndex + rowIndex * 5))}
                                 style={[
                                     styles.cell,
                                     tileStyles[rowIndex][cellIndex],
@@ -355,7 +355,8 @@ export default game;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingVertical: 25,
+        paddingTop: 15,
+        paddingBottom: 5,
     },
     headerIcon: {
         flexDirection: 'row',
@@ -384,7 +385,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
     hintsContainer: {
-        flex: 0.6,
+        flex: 1,
     },
     keyboardContainer: {
         flex: 1,

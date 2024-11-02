@@ -225,9 +225,9 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 40,
         paddingTop: 10,
-        paddingBottom: 20,
+        paddingBottom: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     helpBtn: {
