@@ -3,13 +3,15 @@ import {useEffect} from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import {useFonts, FrankRuhlLibre_800ExtraBold, FrankRuhlLibre_500Medium, FrankRuhlLibre_900Black} from '@expo-google-fonts/frank-ruhl-libre';
 import {DefaultTheme, DarkTheme, ThemeProvider} from '@react-navigation/native';
-import {useColorScheme, StyleSheet, Text} from 'react-native';
+import {useColorScheme, StyleSheet, Text, Platform} from 'react-native';
 import {ClerkProvider, ClerkLoaded} from '@clerk/clerk-expo';
 import {tokenCache} from '@/utils/cache';
 import ThemedText from '@/components/ThemedText';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Ionicons} from '@expo/vector-icons';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import * as NavigationBar from 'expo-navigation-bar';
+
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
@@ -20,6 +22,20 @@ if (!publishableKey) {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+    useEffect(() => {
+        const hideNavigationBar = () => {
+            NavigationBar.setVisibilityAsync('hidden');
+        };
+
+        if (Platform.OS === 'android') {
+            hideNavigationBar();
+
+            const interval = setInterval(hideNavigationBar, 4000);
+
+            return () => clearInterval(interval);
+        }
+    }, []);
+
     const colorScheme = useColorScheme();
     const router = useRouter();
 
