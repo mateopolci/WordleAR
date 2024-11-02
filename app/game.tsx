@@ -13,12 +13,22 @@ import {SignedIn} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
 import {doc, getDoc, onSnapshot} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
-import Animated, {useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming, ZoomIn} from 'react-native-reanimated';
+import Animated, {FadeIn, Layout, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming, ZoomIn} from 'react-native-reanimated';
 
 //Modificar a 1 para debug
 const ROWS = 6;
 
 const game = () => {
+
+    const [showAnimations, setShowAnimations] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowAnimations(true);
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     const {user} = useUser();
     const [userScore, setUserScore] = useState<any>();
     const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -256,7 +266,7 @@ const game = () => {
                 addKey(event.key);
             }
         };
-        
+
         if (Platform.OS === 'web') {
             document.addEventListener('keydown', handleKeyDown);
         }
@@ -265,8 +275,7 @@ const game = () => {
             if (Platform.OS === 'web') {
                 document.removeEventListener('keydown', handleKeyDown);
             }
-        }
-
+        };
     }, [curCol]);
 
     return (
@@ -296,17 +305,22 @@ const game = () => {
                 }}
             />
 
-            <View style={styles.gameField}>
+<View style={styles.gameField}>
                 {rows.map((row, rowIndex) => (
-                    <Animated.View style={[styles.gameFieldRow, rowStyles[rowIndex]]} key={`row-${rowIndex}`}>
+                    <Animated.View 
+                        style={[styles.gameFieldRow, rowStyles[rowIndex]]} 
+                        key={`row-${rowIndex}`}
+                        layout={Layout}
+                    >
                         {row.map((cell, cellIndex) => (
                             <Animated.View
-                                entering={ZoomIn.delay(50 * cellIndex)}
+                                entering={FadeIn.duration(300).delay(50 * (cellIndex + rowIndex * 5))}
                                 style={[
                                     styles.cell,
                                     tileStyles[rowIndex][cellIndex],
                                 ]}
                                 key={`cell-${rowIndex}-${cellIndex}`}
+                                layout={Layout}
                             >
                                 <Text
                                     style={[
