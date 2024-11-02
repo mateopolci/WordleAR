@@ -13,7 +13,7 @@ import {SignedIn} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
 import {doc, getDoc, onSnapshot} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
-import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming, ZoomIn } from 'react-native-reanimated';
+import Animated, {useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming, ZoomIn} from 'react-native-reanimated';
 
 //Modificar a 1 para debug
 const ROWS = 6;
@@ -26,7 +26,7 @@ const game = () => {
     useEffect(() => {
         if (user) {
             fetchUserScore();
-            
+
             const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
             unsubscribeRef.current = onSnapshot(docRef, (doc) => {
                 if (doc.exists()) {
@@ -51,7 +51,7 @@ const game = () => {
             setUserScore(docSnap.data());
         }
     };
-    
+
     const colorScheme = useColorScheme();
     const backgroundColor = Colors[colorScheme ?? 'light'].gameBg;
     const textColor = Colors[colorScheme ?? 'light'].text;
@@ -90,6 +90,9 @@ const game = () => {
             shakeRow();
             return;
         }
+
+        flipRow();
+
         const newBlue: string[] = [];
         const newYellow: string[] = [];
         const newGray: string[] = [];
@@ -116,26 +119,6 @@ const game = () => {
         }, 1500);
         setCurRow(curRow + 1);
         setCurCol(0);
-    };
-
-    const getCellColor = (cell: string, rowIndex: number, cellIndex: number) => {
-        if (curRow > rowIndex) {
-            if (wordLetters[cellIndex] === cell) {
-                return '#6ABDED';
-            } else if (wordLetters.includes(cell)) {
-                return '#FFE44D';
-            } else {
-                return grayColor;
-            }
-        }
-        return 'transparent';
-    };
-
-    const getBorderColor = (cell: string, rowIndex: number, cellIndex: number) => {
-        if (curRow > rowIndex && cell !== '') {
-            return getCellColor(cell, rowIndex, cellIndex);
-        }
-        return Colors.light.gray;
     };
 
     const addKey = (key: string) => {
@@ -178,13 +161,13 @@ const game = () => {
         }
     };
 
-    const offsetShakes = Array.from({ length: ROWS}, () => useSharedValue(0));
+    const offsetShakes = Array.from({length: ROWS}, () => useSharedValue(0));
 
-    const rowStyles = Array.from({length: ROWS}, (_, index) => 
+    const rowStyles = Array.from({length: ROWS}, (_, index) =>
         useAnimatedStyle(() => {
             return {
-                transform: [{translateX: offsetShakes[index].value}]
-            }
+                transform: [{translateX: offsetShakes[index].value}],
+            };
         })
     );
 
@@ -192,12 +175,76 @@ const game = () => {
         const TIME = 70;
         const OFFSET = 10;
 
-        offsetShakes[curRow].value = withSequence(
-            withTiming(-OFFSET, {duration: TIME/2}),
-            withRepeat(withTiming(OFFSET, {duration: TIME}), 4, true),
-            withTiming(0, {duration: TIME/2}),
+        offsetShakes[curRow].value = withSequence(withTiming(-OFFSET, {duration: TIME / 2}), withRepeat(withTiming(OFFSET, {duration: TIME}), 4, true), withTiming(0, {duration: TIME / 2}));
+    };
+
+    const tileRotates = Array.from({length: ROWS}, () => Array.from({length: 5}, () => useSharedValue(0)));
+
+    const cellBackgrounds = Array.from({length: ROWS}, () => Array.from({length: 5}, () => useSharedValue('transparent')));
+
+    const cellBorders = Array.from({length: ROWS}, () => Array.from({length: 5}, () => useSharedValue(Colors.light.gray)));
+
+    const tileStyles = Array.from({length: ROWS}, (_, index) => {
+        return Array.from({length: 5}, (_, tileIndex) =>
+            useAnimatedStyle(() => {
+                return {
+                    transform: [{rotateX: `${tileRotates[index][tileIndex].value}deg`}],
+                    borderColor: cellBorders[index][tileIndex].value,
+                    backgroundColor: cellBackgrounds[index][tileIndex].value,
+                };
+            })
         );
-    }
+    });
+
+    const flipRow = () => {
+        const TIME = 300;
+        const OFFSET = 90;
+
+        tileRotates[curRow].forEach((value, index) => {
+            value.value = withDelay(
+                index * 100,
+                withSequence(
+                    withTiming(OFFSET, {duration: TIME}, () => {}),
+                    withTiming(0, {duration: TIME})
+                )
+            );
+        });
+    };
+
+    const setCellColor = (cell: string, rowIndex: number, cellIndex: number) => {
+        if (curRow > rowIndex) {
+            if (wordLetters[cellIndex] === cell) {
+                cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#6ABDED'));
+            } else if (wordLetters.includes(cell)) {
+                cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#FFE44D'));
+            } else {
+                cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming(grayColor));
+            }
+        } else {
+            cellBackgrounds[rowIndex][cellIndex].value = withTiming('transparent', {duration: 100});
+        }
+    };
+
+    const setBorderColor = (cell: string, rowIndex: number, cellIndex: number) => {
+        if (curRow > rowIndex && cell !== '') {
+            if (wordLetters[cellIndex] === cell) {
+                cellBorders[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#6ABDED'));
+            } else if (wordLetters.includes(cell)) {
+                cellBorders[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#FFE44D'));
+            } else {
+                cellBorders[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming(grayColor));
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (curRow === 0) return;
+
+        rows[curRow - 1].map((cell, cellIndex) => {
+            setCellColor(cell, curRow - 1, cellIndex);
+            setBorderColor(cell, curRow - 1, cellIndex);
+        });
+    }, [curRow]);
 
     return (
         <View style={[styles.container, {backgroundColor}]}>
@@ -231,13 +278,10 @@ const game = () => {
                     <Animated.View style={[styles.gameFieldRow, rowStyles[rowIndex]]} key={`row-${rowIndex}`}>
                         {row.map((cell, cellIndex) => (
                             <Animated.View
-                            entering={ZoomIn.delay(50 * cellIndex)}
+                                entering={ZoomIn.delay(50 * cellIndex)}
                                 style={[
                                     styles.cell,
-                                    {
-                                        backgroundColor: getCellColor(cell, rowIndex, cellIndex),
-                                        borderColor: getBorderColor(cell, rowIndex, cellIndex),
-                                    },
+                                    tileStyles[rowIndex][cellIndex],
                                 ]}
                                 key={`cell-${rowIndex}-${cellIndex}`}
                             >
