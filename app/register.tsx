@@ -204,6 +204,7 @@ const Register = () => {
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
+                autoCorrect={false}
             />
 
             <ThemedText style={[styles.inputLabel]}>Contraseña</ThemedText>
