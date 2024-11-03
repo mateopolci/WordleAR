@@ -8,7 +8,7 @@ import { useUser } from '@clerk/clerk-expo';
 
 interface PlayerScore {
   id: string;
-  username: string;
+  fullName: string;
   totalPoints: number;
   wins: number;
   currentStreak: number;
@@ -34,7 +34,7 @@ const Leaderboard = () => {
         const data = doc.data();
         leaderboardData.push({
           id: doc.id,
-          username: doc.id === user?.id ? 'Tú' : `Jugador ${leaderboardData.length + 1}`,
+          fullName: doc.id === user?.id ? 'Tú' : (data.fullName || 'Anónimo'),
           totalPoints: data.totalPoints || 0,
           wins: data.wins || 0,
           currentStreak: data.currentStreak || 0,
@@ -72,7 +72,7 @@ const Leaderboard = () => {
         </View>
         
         <View style={styles.playerInfo}>
-          <ThemedText style={styles.username}>{item.username}</ThemedText>
+          <ThemedText style={styles.fullName}>{item.fullName}</ThemedText>
           <View style={styles.statsContainer}>
             <View style={styles.stat}>
               <ThemedText style={styles.statValue}>{item.totalPoints}</ThemedText>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   playerInfo: {
     flex: 1,
   },
-  username: {
+  fullName: {
     fontSize: 18,
     fontFamily: 'FrankRuhlLibre_800ExtraBold',
     marginBottom: 8,

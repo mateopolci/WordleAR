@@ -35,6 +35,7 @@ const end = () => {
         const docSnap = await getDoc(docRef);
 
         let newScore = {
+            fullName:`${user.firstName} ${user.lastName}`.trim(),
             played: 1,
             wins: win === 'true' ? 1 : 0,
             lastGame: win === 'true' ? 'win' : 'loss',
@@ -47,6 +48,7 @@ const end = () => {
             const data = docSnap.data();
 
             newScore = {
+                fullName: `${user.firstName} ${user.lastName}`.trim(),
                 played: data.played + 1,
                 wins: win === 'true' ? data.wins + 1 : data.wins,
                 lastGame: win === 'true' ? 'win' : 'loss',
@@ -55,7 +57,6 @@ const end = () => {
                 coins: win === 'true' ? (data.lastGame === 'win' ? data.coins + 20 : data.coins + 10) : data.coins,
             };
         }
-        /* coins: win === 'true' && data.lastGame === 'win' ? data.coins + 20 : data.coins, */
 
         await setDoc(docRef, newScore);
         setUserScore(newScore);
