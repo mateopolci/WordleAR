@@ -9,7 +9,7 @@ import {words} from '@/utils/targetWord2';
 import Hints from '@/components/Hints';
 import Coin from '@/assets/images/coin.svg';
 import ThemedText from '@/components/ThemedText';
-import {SignedIn} from '@clerk/clerk-expo';
+import {SignedIn, SignedOut} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
 import {doc, getDoc, onSnapshot} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
@@ -19,7 +19,6 @@ import Animated, {FadeIn, Layout, useAnimatedStyle, useSharedValue, withDelay, w
 const ROWS = 6;
 
 const game = () => {
-
     const [showAnimations, setShowAnimations] = useState(false);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -305,20 +304,13 @@ const game = () => {
                 }}
             />
 
-<View style={styles.gameField}>
+            <View style={styles.gameField}>
                 {rows.map((row, rowIndex) => (
-                    <Animated.View 
-                        style={[styles.gameFieldRow, rowStyles[rowIndex]]} 
-                        key={`row-${rowIndex}`}
-                        layout={Layout}
-                    >
+                    <Animated.View style={[styles.gameFieldRow, rowStyles[rowIndex]]} key={`row-${rowIndex}`} layout={Layout}>
                         {row.map((cell, cellIndex) => (
                             <Animated.View
                                 entering={FadeIn.duration(300).delay(25 * (cellIndex + rowIndex * 5))}
-                                style={[
-                                    styles.cell,
-                                    tileStyles[rowIndex][cellIndex],
-                                ]}
+                                style={[styles.cell, tileStyles[rowIndex][cellIndex]]}
                                 key={`cell-${rowIndex}-${cellIndex}`}
                                 layout={Layout}
                             >
@@ -346,6 +338,9 @@ const game = () => {
                     <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />
                 </View>
             </SignedIn>
+            <SignedOut>
+                <View style={styles.hintsContainer}></View>
+            </SignedOut>
         </View>
     );
 };
