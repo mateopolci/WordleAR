@@ -125,7 +125,7 @@ export default function RootLayout() {
                                 options={{
                                     headerBackTitle: '',
                                     headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
-                                    title: 'Leaderboard',
+                                    title: 'Tabla de posiciones',
                                     headerBackTitleStyle: {
                                         fontFamily: 'FrankRuhlLibre_800ExtraBold',
                                         fontSize: 22,

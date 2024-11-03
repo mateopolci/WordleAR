@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: 15,
         fontFamily: 'FrankRuhlLibre_500Medium',
+        paddingBottom: 30,
     },
     inputLabel: {
         fontSize: 15,
