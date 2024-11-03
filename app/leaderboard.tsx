@@ -54,9 +54,9 @@ const Leaderboard = () => {
     const position = index + 1;
     let medalColor = '';
     
-    if (position === 1) medalColor = '#FFD700'; // Gold
-    else if (position === 2) medalColor = '#C0C0C0'; // Silver
-    else if (position === 3) medalColor = '#CD7F32'; // Bronze
+    if (position === 1) medalColor = '#FFD700';
+    else if (position === 2) medalColor = '#C0C0C0';
+    else if (position === 3) medalColor = '#CD7F32';
 
     return (
       <View style={[

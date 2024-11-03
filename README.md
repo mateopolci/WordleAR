@@ -75,3 +75,7 @@
 ### Compartir partida
 
 <img src="./screenshots/ShareGame.jpeg" width="250" />
+
+### Tabla de posiciones
+
+<img src="./screenshots/Leaderboard.jpeg" width="250" />
