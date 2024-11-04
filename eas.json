@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 12.6.2",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3RpcnJlZC1sZW11ci00MS5jbGVyay5hY2NvdW50cy5kZXYk"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3RpcnJlZC1sZW11ci00MS5jbGVyay5hY2NvdW50cy5kZXYk"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY": "pk_test_c3RpcnJlZC1sZW11ci00MS5jbGVyay5hY2NvdW50cy5kZXYk"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

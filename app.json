@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mateopolci.wordlear"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +34,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4bf17ecd-73c0-4f74-b164-dd466829216a"
+      }
     }
   }
 }
