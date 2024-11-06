@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, useColorScheme, Alert, Platform} from 'react-native';
+import {StyleSheet, Text, View, useColorScheme, Platform} from 'react-native';
 import {useRef, useState, useEffect} from 'react';
 import Colors from '@/constants/Colors';
 import {Link, Stack, useRouter} from 'expo-router';
@@ -155,6 +155,20 @@ const game = () => {
             setRows(newRows);
             setCurCol(colStateRef.current + 1);
         }
+    };
+
+    const addWord = (word: string) => {
+        const letters = word.split('');
+        const newRows = [...rows.map((row) => [...row])];
+        
+        letters.forEach((letter, index) => {
+            if (index < 5) {
+                newRows[curRow][index] = letter;
+            }
+        });
+        
+        setRows(newRows);
+        setCurCol(Math.min(letters.length, 5));
     };
 
     const handleHint = (hint: 'gray3' | 'gray5' | 'yellow1' | 'yellowAll', letters: string[]) => {
@@ -331,7 +345,7 @@ const game = () => {
             </View>
 
             <View style={styles.keyboardContainer}>
-                <OnScreenKeyboard onKeyPressed={addKey} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
+                <OnScreenKeyboard onKeyPressed={addKey} onWordRecognized={addWord} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
             <SignedIn>
                 <View style={styles.hintsContainer}>
