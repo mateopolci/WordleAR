@@ -31,36 +31,47 @@ const OnScreenKeyboard = ({onKeyPressed, onWordRecognized, blueLetters, yellowLe
     const isInLetters = (key: string) => [...blueLetters, ...yellowLetters, ...grayLetters].includes(key);
 
     React.useEffect(() => {
-        Voice.onSpeechResults = onSpeechResults;
-        return () => {
-            Voice.destroy().then(Voice.removeAllListeners);
-        };
-    }, []);
+    Voice.onSpeechResults = onSpeechResults;
+    return () => {
+        Voice.destroy().then(Voice.removeAllListeners);
+    };
+}, []);
 
-    const onSpeechResults = (e: any) => {
-        if (e.value && e.value[0]) {
-            const word = e.value[0].toLowerCase().trim();
-            if (word.length === 5) {
-                onWordRecognized(word);
-            }
+const removeAccents = (word: string) => {
+    return word
+        .replace(/á/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/í/g, 'i')
+        .replace(/ó/g, 'o')
+        .replace(/ú/g, 'u');
+};
+
+const onSpeechResults = (e: any) => {
+    if (e.value && e.value[0]) {
+        let word = e.value[0].toLowerCase().trim();
+        word = removeAccents(word);
+
+        if (word.length === 5) {
+            onWordRecognized(word);
         }
-        setIsRecording(false);
-    };
-    
-    const handleMicrophonePress = async () => {
-        try {
-            if (isRecording) {
-                await Voice.stop();
-                setIsRecording(false);
-            } else {
-                setIsRecording(true);
-                await Voice.start('es-ES');
-            }
-        } catch (error) {
-            console.error(error);
+    }
+    setIsRecording(false);
+};
+
+const handleMicrophonePress = async () => {
+    try {
+        if (isRecording) {
+            await Voice.stop();
             setIsRecording(false);
+        } else {
+            setIsRecording(true);
+            await Voice.start('es-ES');
         }
-    };
+    } catch (error) {
+        console.error(error);
+        setIsRecording(false);
+    }
+};
 
     return (
         <View style={styles.container}>
