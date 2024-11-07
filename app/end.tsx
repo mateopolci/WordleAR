@@ -91,7 +91,7 @@ const end = () => {
 
     const navigateRoot = () => {
         router.dismissAll();
-        router.replace('/');
+        router.replace('/game');
     };
 
     return (
