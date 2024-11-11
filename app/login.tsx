@@ -1,4 +1,4 @@
-import {StyleSheet, TextInput, useColorScheme, View, Text, Alert} from 'react-native';
+import {StyleSheet, TextInput, useColorScheme, View, Text, Alert, TouchableOpacity} from 'react-native';
 import {Link, useRouter} from 'expo-router';
 import {useOAuth, useSignIn} from '@clerk/clerk-expo';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -6,7 +6,7 @@ import Colors from '@/constants/Colors';
 import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
 import {Ionicons} from '@expo/vector-icons';
-import { useState } from 'react';
+import {useRef, useState} from 'react';
 
 enum Strategy {
     Google = 'oauth_google',
@@ -15,10 +15,12 @@ enum Strategy {
 }
 
 const Login = () => {
+    const buttonRef = useRef<TouchableOpacity>(null);
+
     const router = useRouter();
     const colorScheme = useColorScheme();
-    const { signIn, setActive, isLoaded } = useSignIn();
-    
+    const {signIn, setActive, isLoaded} = useSignIn();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +39,7 @@ const Login = () => {
 
     const onSignInPress = async () => {
         if (!isLoaded) return;
-        
+
         setIsLoading(true);
         try {
             const completeSignIn = await signIn.create({
@@ -45,13 +47,10 @@ const Login = () => {
                 password,
             });
 
-            await setActive({ session: completeSignIn.createdSessionId });
+            await setActive({session: completeSignIn.createdSessionId});
             router.back();
         } catch (err: any) {
-            Alert.alert(
-                "Error al iniciar sesión",
-                err?.errors?.[0]?.message || "Por favor verifica tus credenciales"
-            );
+            Alert.alert('Error al iniciar sesión', err?.errors?.[0]?.message || 'Por favor verifica tus credenciales');
         } finally {
             setIsLoading(false);
         }
@@ -81,9 +80,9 @@ const Login = () => {
             <ThemedText style={styles.header}>Inicio de sesión</ThemedText>
 
             <ThemedText style={[styles.inputLabel]}>Email</ThemedText>
-            <TextInput 
-                style={[styles.input, {borderColor: inputBorderColor, color: inputBorderColor}]} 
-                placeholder="tucorreo@ejemplo.com" 
+            <TextInput
+                style={[styles.input, {borderColor: inputBorderColor, color: inputBorderColor}]}
+                placeholder="tucorreo@ejemplo.com"
                 placeholderTextColor={Colors.light.gray}
                 value={email}
                 onChangeText={setEmail}
@@ -103,63 +102,52 @@ const Login = () => {
                 autoCapitalize="none"
             />
 
-            <ThemedButton 
-                title={isLoading ? "Cargando..." : "Iniciar sesión"} 
-                style={styles.btn} 
-                onPress={onSignInPress}
-                disabled={isLoading}
-            />
+            <ThemedButton ref={buttonRef} title={isLoading ? 'Cargando...' : 'Iniciar sesión'} style={styles.btn} onPress={onSignInPress} disabled={isLoading} />
 
             <View style={styles.separatorView}>
-                <View style={{ flex: 1 }}></View>
+                <View style={{flex: 1}}></View>
                 <Link href={'/register'} asChild>
-                    <Text style={{
-                        marginTop: 15,
-                        color: '#6ABDED',
-                        fontSize: 16,
-                    }}>
+                    <Text
+                        style={{
+                            marginTop: 15,
+                            color: '#6ABDED',
+                            fontSize: 16,
+                        }}
+                    >
                         No tengo cuenta
                     </Text>
                 </Link>
-                <View style={{ flex: 1 }}></View>
+                <View style={{flex: 1}}></View>
             </View>
 
             <View style={styles.separatorView}>
-                <View style={{
-                    flex: 1,
-                    borderBottomColor: inputBorderColor,
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                }}></View>
+                <View
+                    style={{
+                        flex: 1,
+                        borderBottomColor: inputBorderColor,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                    }}
+                ></View>
                 <Text style={styles.separator}>o</Text>
-                <View style={{
-                    flex: 1,
-                    borderBottomColor: inputBorderColor,
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                }}></View>
+                <View
+                    style={{
+                        flex: 1,
+                        borderBottomColor: inputBorderColor,
+                        borderBottomWidth: StyleSheet.hairlineWidth,
+                    }}
+                ></View>
             </View>
 
             <View style={{gap: 20}}>
-                <ThemedButton 
-                    title="Continuar con Google" 
-                    style={styles.btnOutline} 
-                    onPress={() => onSelectAuth(Strategy.Google)}
-                >
+                <ThemedButton ref={buttonRef} title="Continuar con Google" style={styles.btnOutline} onPress={() => onSelectAuth(Strategy.Google)}>
                     <Ionicons name="logo-google" size={24} style={styles.btnIcon} />
                 </ThemedButton>
 
-                <ThemedButton 
-                    style={styles.btnOutline} 
-                    onPress={() => onSelectAuth(Strategy.Apple)} 
-                    title="Continuar con Apple"
-                >
+                <ThemedButton ref={buttonRef} style={styles.btnOutline} onPress={() => onSelectAuth(Strategy.Apple)} title="Continuar con Apple">
                     <Ionicons name="logo-apple" size={24} style={styles.btnIcon} />
                 </ThemedButton>
 
-                <ThemedButton 
-                    style={styles.btnOutline} 
-                    onPress={() => onSelectAuth(Strategy.Facebook)} 
-                    title="Continuar con Facebook"
-                >
+                <ThemedButton ref={buttonRef} style={styles.btnOutline} onPress={() => onSelectAuth(Strategy.Facebook)} title="Continuar con Facebook">
                     <Ionicons name="logo-facebook" size={24} style={styles.btnIcon} />
                 </ThemedButton>
             </View>

@@ -1,6 +1,6 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Link, useLocalSearchParams, useRouter} from 'expo-router';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Ionicons} from '@expo/vector-icons';
 import Icon from '@/assets/images/wordlear-icon.svg';
 import Colors from '@/constants/Colors';
@@ -12,6 +12,9 @@ import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
 import {doc, getDoc, setDoc} from 'firebase/firestore';
 
 const end = () => {
+
+    const buttonRef = useRef<TouchableOpacity>(null);
+
     const {win, word, gameField} = useLocalSearchParams<{
         win: string;
         word: string;
@@ -116,7 +119,7 @@ const end = () => {
                     <ThemedText style={styles.text}>¿Querés ver tus rachas y estadísticas?</ThemedText>
 
                     <Link href={'/login'} asChild>
-                        <ThemedButton title="Iniciar sesión" style={styles.btn}></ThemedButton>
+                        <ThemedButton  ref={buttonRef} title="Iniciar sesión" style={styles.btn}></ThemedButton>
                     </Link>
                 </SignedOut>
 

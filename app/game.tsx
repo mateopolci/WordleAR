@@ -125,8 +125,8 @@ const game = () => {
             } else if (curRow + 1 >= rows.length) {
                 router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
             }
-        }, 1500);
-        setCurRow(curRow + 1);
+        }, 1000);
+        setCurRow((row) => row + 1);
         setCurCol(0);
     };
 

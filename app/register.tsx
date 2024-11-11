@@ -1,13 +1,16 @@
-import {StyleSheet, TextInput, useColorScheme, Alert} from 'react-native';
+import {StyleSheet, TextInput, useColorScheme, Alert, TouchableOpacity} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Colors from '@/constants/Colors';
 import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
 import {useSignUp} from '@clerk/clerk-expo';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
 import {useRouter} from 'expo-router';
 
 const Register = () => {
+
+    const buttonRef = useRef<TouchableOpacity>(null);
+
     const router = useRouter();
     const colorScheme = useColorScheme();
     const {isLoaded, signUp} = useSignUp();
@@ -149,7 +152,7 @@ const Register = () => {
                     autoCapitalize="none"
                 />
 
-                <ThemedButton title={isLoading ? 'Verificando...' : 'Verificar email'} style={styles.btn} onPress={onVerifyPress} disabled={isLoading} />
+                <ThemedButton  ref={buttonRef} title={isLoading ? 'Verificando...' : 'Verificar email'} style={styles.btn} onPress={onVerifyPress} disabled={isLoading} />
             </ScrollView>
         );
     }
@@ -200,7 +203,7 @@ const Register = () => {
                 autoCapitalize="none"
             />
 
-            <ThemedButton title={isLoading ? 'Cargando...' : 'Registrarme'} style={styles.btn} onPress={onSignUpPress} disabled={isLoading} />
+            <ThemedButton  ref={buttonRef} title={isLoading ? 'Cargando...' : 'Registrarme'} style={styles.btn} onPress={onSignUpPress} disabled={isLoading} />
             <ThemedText style={styles.subText}>Al continuar, aceptas los Términos de Venta, Términos de Servicio y la Política de Privacidad.</ThemedText>
         </ScrollView>
     );

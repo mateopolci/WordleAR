@@ -1,13 +1,15 @@
-import {Text, View, StyleSheet, Alert} from 'react-native';
+import {Text, View, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import Icon from '@/assets/images/wordlear-icon.svg';
 import {Link, useRouter} from 'expo-router';
 import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
 import {SignedIn, SignedOut, useAuth, useUser} from '@clerk/clerk-expo';
-import { useState } from 'react';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import {useRef, useState} from 'react';
+import Animated, {FadeInDown} from 'react-native-reanimated';
 
 export default function Index() {
+    const buttonRef = useRef<TouchableOpacity>(null);
+
     const {signOut} = useAuth();
     const {user} = useUser();
     const router = useRouter();
@@ -19,10 +21,7 @@ export default function Index() {
             await signOut();
         } catch (error) {
             console.error('Error al cerrar sesión:', error);
-            Alert.alert(
-                "Error",
-                "Hubo un problema al cerrar sesión. Por favor, inténtalo de nuevo."
-            );
+            Alert.alert('Error', 'Hubo un problema al cerrar sesión. Por favor, inténtalo de nuevo.');
         } finally {
             setIsLoading(false);
         }
@@ -41,21 +40,16 @@ export default function Index() {
 
             <View style={styles.menu}>
                 <Link href={'/game'} asChild>
-                    <ThemedButton title="Jugar" style={styles.btn}></ThemedButton>
+                    <ThemedButton ref={buttonRef} title="Jugar" style={styles.btn}></ThemedButton>
                 </Link>
 
                 <SignedOut>
                     <Link href={'/login'} asChild>
-                        <ThemedButton title="Iniciar sesión" style={styles.btn}></ThemedButton>
+                        <ThemedButton ref={buttonRef} title="Iniciar sesión" style={styles.btn}></ThemedButton>
                     </Link>
                 </SignedOut>
                 <SignedIn>
-                    <ThemedButton 
-                        onPress={handleSignOut} 
-                        title={isLoading ? "Cerrando..." : "Cerrar Sesión"} 
-                        style={styles.btn}
-                        disabled={isLoading}
-                    ></ThemedButton>
+                    <ThemedButton ref={buttonRef} onPress={handleSignOut} title={isLoading ? 'Cerrando...' : 'Cerrar Sesión'} style={styles.btn} disabled={isLoading}></ThemedButton>
                 </SignedIn>
             </View>
 
@@ -67,9 +61,7 @@ export default function Index() {
                 </SignedIn>
                 <SignedOut>
                     <View style={styles.header}>
-                        <ThemedText style={styles.footer}>
-                            Inicia sesión para ver tus estadísticas, ganar monedas y puntos.
-                        </ThemedText>
+                        <ThemedText style={styles.footer}>Inicia sesión para ver tus estadísticas, ganar monedas y puntos.</ThemedText>
                     </View>
                 </SignedOut>
             </View>
