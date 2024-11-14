@@ -40,9 +40,13 @@ export default function Index() {
 
             <View style={styles.menu}>
                 <Link href={'/game'} asChild>
-                    <ThemedButton ref={buttonRef} title="Jugar" style={styles.btn}></ThemedButton>
+                    <ThemedButton ref={buttonRef} title="Un jugador" style={styles.btn}></ThemedButton>
                 </Link>
-
+                <SignedIn>
+                    <Link href={'/staging'} asChild>
+                        <ThemedButton ref={buttonRef} title="Multijugador" style={styles.btn}></ThemedButton>
+                    </Link>
+                </SignedIn>
                 <SignedOut>
                     <Link href={'/login'} asChild>
                         <ThemedButton ref={buttonRef} title="Iniciar sesión" style={styles.btn}></ThemedButton>
@@ -61,7 +65,7 @@ export default function Index() {
                 </SignedIn>
                 <SignedOut>
                     <View style={styles.header}>
-                        <ThemedText style={styles.footer}>Inicia sesión para ver tus estadísticas, ganar monedas y puntos.</ThemedText>
+                        <ThemedText style={styles.footer}>Inicia sesión para jugar multijugador, ver tus estadísticas, ganar monedas y puntos.</ThemedText>
                     </View>
                 </SignedOut>
             </View>

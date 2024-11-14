@@ -150,6 +150,18 @@ export default function RootLayout() {
                                 }}
                             />
                             <Stack.Screen
+                                name="staging"
+                                options={{
+                                    headerBackTitle: 'Wordle',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                    title: '',
+                                    headerBackTitleStyle: {
+                                        fontFamily: 'FrankRuhlLibre_800ExtraBold',
+                                        fontSize: 22,
+                                    },
+                                }}
+                            />
+                            <Stack.Screen
                                 name="end"
                                 options={{
                                     headerBackTitle: 'Fin del juego',
