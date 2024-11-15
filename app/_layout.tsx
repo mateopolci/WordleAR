@@ -12,7 +12,6 @@ import {Ionicons} from '@expo/vector-icons';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import * as NavigationBar from 'expo-navigation-bar';
 
-
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 
 if (!publishableKey) {
@@ -72,11 +71,14 @@ export default function RootLayout() {
                                             <Text style={styles.titleHighlight}>AR</Text>
                                         </ThemedText>
                                     ),
-                                    headerLeft: Platform.OS !== 'android' ? () => (
-                                        <TouchableOpacity onPress={() => router.back()}>
-                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
-                                        </TouchableOpacity>
-                                    ) : undefined,
+                                    headerLeft:
+                                        Platform.OS !== 'android'
+                                            ? () => (
+                                                  <TouchableOpacity onPress={() => router.back()}>
+                                                      <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
+                                                  </TouchableOpacity>
+                                              )
+                                            : undefined,
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen
@@ -89,11 +91,14 @@ export default function RootLayout() {
                                             <Text style={styles.titleHighlight}>AR</Text>
                                         </ThemedText>
                                     ),
-                                    headerLeft: Platform.OS !== 'android' ? () => (
-                                        <TouchableOpacity onPress={() => router.back()}>
-                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
-                                        </TouchableOpacity>
-                                    ) : undefined,
+                                    headerLeft:
+                                        Platform.OS !== 'android'
+                                            ? () => (
+                                                  <TouchableOpacity onPress={() => router.back()}>
+                                                      <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
+                                                  </TouchableOpacity>
+                                              )
+                                            : undefined,
                                 }}
                             ></Stack.Screen>
                             <Stack.Screen
@@ -107,11 +112,14 @@ export default function RootLayout() {
                                         fontFamily: 'FrankRuhlLibre_800ExtraBold',
                                         fontSize: 22,
                                     },
-                                    headerLeft: Platform.OS !== 'android' ? () => (
-                                        <TouchableOpacity onPress={() => router.back()}>
-                                            <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
-                                        </TouchableOpacity>
-                                    ) : undefined,
+                                    headerLeft:
+                                        Platform.OS !== 'android'
+                                            ? () => (
+                                                  <TouchableOpacity onPress={() => router.back()}>
+                                                      <Ionicons name="close" size={26} color={colorScheme === 'light' ? '#000000' : '#FFFFFF'} />
+                                                  </TouchableOpacity>
+                                              )
+                                            : undefined,
                                     headerTitle: () => (
                                         <ThemedText style={styles.title}>
                                             Wordle
@@ -173,6 +181,23 @@ export default function RootLayout() {
                                         fontFamily: 'FrankRuhlLibre_800ExtraBold',
                                         fontSize: 22,
                                     },
+                                }}
+                            />
+                            <Stack.Screen
+                                name="create-room"
+                                options={{
+                                    title: '',
+                                    headerBackTitle: '',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                }}
+                            />
+
+                            <Stack.Screen
+                                name="join-room"
+                                options={{
+                                    title: '',
+                                    headerBackTitle: '',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
                                 }}
                             />
                         </Stack>
