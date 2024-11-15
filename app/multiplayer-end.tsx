@@ -51,8 +51,8 @@ export default function MultiplayerEnd() {
                 {isWinner ? '¡Ganaste la partida!' : 'Hoy no fue, la próxima es tuya.'}
             </ThemedText>
             <View style={styles.stats}>
-                <ThemedText>Partidas ganadas: {stats.wins}</ThemedText>
-                <ThemedText>Partidas perdidas: {stats.losses}</ThemedText>
+                <ThemedText>Partidas multijugador ganadas: {stats.wins}</ThemedText>
+                <ThemedText>Partidas multijugador perdidas: {stats.losses}</ThemedText>
             </View>
             <View>
                 <ThemedButton title="Volver al menú" onPress={() => router.push('/')} />

@@ -133,14 +133,14 @@ const game = () => {
         if (isMultiplayer && roomId && user) {
             const unsubscribe = subscribeToRoom(roomId, (roomData) => {
                 setRoom(roomData);
-    
+
                 if (roomData.status === 'finished') {
                     // Handle both winner and loser
                     const updateStats = async () => {
                         const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
                         const statsSnap = await getDoc(statsRef);
                         const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
-    
+
                         if (roomData.loserId === user.id) {
                             await setDoc(statsRef, {
                                 wins: currentStats.wins,
@@ -153,12 +153,12 @@ const game = () => {
                             });
                         }
                     };
-    
+
                     updateStats();
                     router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
                 }
             });
-    
+
             return () => unsubscribe();
         }
     }, [isMultiplayer, roomId, user]);
@@ -412,17 +412,17 @@ const game = () => {
                     style: 'destructive',
                     onPress: async () => {
                         const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
-    
+
                         if (opponentId) {
                             try {
                                 await markGameWon(roomId, opponentId, user.id);
                                 // Removemos la redirección de aquí ya que el useEffect se encargará de ello
                                 // cuando detecte el cambio de estado de la sala
-                                
+
                                 const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
                                 const statsSnap = await getDoc(statsRef);
                                 const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
-    
+
                                 await setDoc(statsRef, {
                                     wins: currentStats.wins,
                                     losses: currentStats.losses + 1,
@@ -462,10 +462,12 @@ const game = () => {
                     headerTitle: () => (
                         <View>
                             <SignedIn>
-                                <View style={styles.headerTitleContainerSignedIn}>
-                                    <Coin width={18} height={18} />
-                                    <ThemedText style={styles.coinCounter}>{userScore?.coins ?? 0}</ThemedText>
-                                </View>
+                                {!isMultiplayer && (
+                                    <View style={styles.headerTitleContainerSignedIn}>
+                                        <Coin width={18} height={18} />
+                                        <ThemedText style={styles.coinCounter}>{userScore?.coins ?? 0}</ThemedText>
+                                    </View>
+                                )}
                             </SignedIn>
                         </View>
                     ),
@@ -502,9 +504,7 @@ const game = () => {
                 <OnScreenKeyboard onKeyPressed={addKey} onWordRecognized={addWord} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
             <SignedIn>
-                <View style={styles.hintsContainer}>
-                    <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />
-                </View>
+                <View style={styles.hintsContainer}>{!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}</View>
             </SignedIn>
             <SignedOut>
                 <View style={styles.hintsContainer}></View>

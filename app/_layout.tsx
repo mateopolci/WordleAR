@@ -191,11 +191,18 @@ export default function RootLayout() {
                                     headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
                                 }}
                             />
-
                             <Stack.Screen
                                 name="join-room"
                                 options={{
                                     title: '',
+                                    headerBackTitle: '',
+                                    headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
+                                }}
+                            />
+                            <Stack.Screen
+                                name="multiplayer-end"
+                                options={{
+                                    title: 'Fin de la partida',
                                     headerBackTitle: '',
                                     headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
                                 }}
