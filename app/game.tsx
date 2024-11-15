@@ -11,14 +11,20 @@ import Coin from '@/assets/images/coin.svg';
 import ThemedText from '@/components/ThemedText';
 import {SignedIn, SignedOut} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
-import {doc, getDoc, onSnapshot} from 'firebase/firestore';
+import {doc, getDoc, onSnapshot, setDoc} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
 import Animated, {FadeIn, Layout, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming} from 'react-native-reanimated';
+import {useLocalSearchParams} from 'expo-router';
+import {updateGameState, markGameWon, subscribeToRoom} from '@/services/multiplayerService';
+import {Room} from '@/types/Room';
 
 //Modificar a 1 para debug
 const ROWS = 6;
 
 const game = () => {
+    const {mode, roomId} = useLocalSearchParams<{mode?: string; roomId?: string}>();
+    const isMultiplayer = mode === 'multiplayer';
+    const [room, setRoom] = useState<Room | null>(null);
     const [showAnimations, setShowAnimations] = useState(false);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -37,59 +43,128 @@ const game = () => {
             fetchUserScore();
 
             const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
+        }
+
+        return () => {};
+    }, [user]);
+
+    useEffect(() => {
+        if (isMultiplayer && roomId) {
+            const unsubscribe = subscribeToRoom(roomId, (room) => {
+                if (room.status === 'finished' && room.loserId === user?.id) {
+                    if (user) {
+                        router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
+                    }
+                }
+            });
+            return () => unsubscribe();
+        }
+    }, [isMultiplayer, roomId]);
+
+    
+    useEffect(() => {
+        if (user) {
+            fetchUserScore();
+            
+            const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
             unsubscribeRef.current = onSnapshot(docRef, (doc) => {
                 if (doc.exists()) {
                     setUserScore(doc.data());
                 }
             });
         }
-
+        
         return () => {
             if (unsubscribeRef.current) {
                 unsubscribeRef.current();
             }
         };
     }, [user]);
-
+    
     const fetchUserScore = async () => {
         if (!user) return;
         const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
         const docSnap = await getDoc(docRef);
-
+        
         if (docSnap.exists()) {
             setUserScore(docSnap.data());
         }
     };
-
+    
     const colorScheme = useColorScheme();
     const backgroundColor = Colors[colorScheme ?? 'light'].gameBg;
     const textColor = Colors[colorScheme ?? 'light'].text;
     const grayColor = Colors[colorScheme ?? 'light'].gray;
     const router = useRouter();
-
+    
     const [rows, setRows] = useState<string[][]>(new Array(ROWS).fill(new Array(5).fill('')));
     const [curRow, setCurRow] = useState(0);
     const [curCol, _setCurCol] = useState(0);
-
+    
     const [blueLetters, setBlueLetters] = useState<string[]>([]);
     const [yellowLetters, setYellowLetters] = useState<string[]>([]);
     const [grayLetters, setGrayLetters] = useState<string[]>([]);
-
-    //Palabra random (Descomentar para jugar)
-    const [word, setWord] = useState<string>(words[Math.floor(Math.random() * words.length)]);
-
-    //Palabra MATEO (Descomentar para debug)
-    /* const [word, setWord] = useState<string>('mateo'); */
-
+    
+    const [word, setWord] = useState<string>('');
+    useEffect(() => {
+        if (isMultiplayer) {
+            if (room?.word) {
+                setWord(room.word);
+            }
+        } else {
+            setWord(words[Math.floor(Math.random() * words.length)]);
+        }
+    }, [isMultiplayer, room]);
+    
     const wordLetters = word.split('');
-
+    
     const colStateRef = useRef(curCol);
     const setCurCol = (col: number) => {
         colStateRef.current = col;
         _setCurCol(col);
     };
+    
+    useEffect(() => {
+        if (isMultiplayer && roomId && user && curRow > 0) {
+            updateGameState(roomId, user.id, rows);
+        }
+    }, [curRow]);
 
-    const checkWord = () => {
+    useEffect(() => {
+        if (isMultiplayer && roomId && user) {
+            const unsubscribe = subscribeToRoom(roomId, (roomData) => {
+                setRoom(roomData);
+                
+                if (roomData.gameState) {
+                    const opponentId = roomData.guestId === user.id ? roomData.hostId : roomData.guestId;
+                    const opponentGameState = roomData.gameState[opponentId];
+                    
+                    if (!opponentGameState) return;
+                }
+                   
+                if (roomData.status === 'finished') {
+                    if (roomData.loserId === user.id) {
+                        const updateStats = async () => {
+                            const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
+                            const statsSnap = await getDoc(statsRef);
+                            const currentStats = statsSnap.exists() ? statsSnap.data() : { wins: 0, losses: 0 };
+                            
+                            await setDoc(statsRef, {
+                                wins: currentStats.wins,
+                                losses: currentStats.losses + 1
+                            });
+                        };
+                        
+                        updateStats();
+                        router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
+                    }
+                }
+            });
+    
+            return () => unsubscribe();
+        }
+    }, [isMultiplayer, roomId, user]);
+    const checkWord = async () => {
         const currentWord = rows[curRow].join('');
         if (currentWord.length < word.length) {
             shakeRow();
@@ -99,13 +174,13 @@ const game = () => {
             shakeRow();
             return;
         }
-
+        
         flipRow();
-
+        
         const newBlue: string[] = [];
         const newYellow: string[] = [];
         const newGray: string[] = [];
-
+        
         currentWord.split('').forEach((letter, index) => {
             if (letter === wordLetters[index]) {
                 newBlue.push(letter);
@@ -118,21 +193,56 @@ const game = () => {
         setBlueLetters([...blueLetters, ...newBlue]);
         setYellowLetters([...yellowLetters, ...newYellow]);
         setGrayLetters([...grayLetters, ...newGray]);
-
-        setTimeout(() => {
+    
+        setTimeout(async () => {
             if (currentWord === word) {
-                router.push(`/end?win=true&word=${word}&gameField=${JSON.stringify(rows)}`);
+                if (isMultiplayer && roomId && user && room) {
+                    const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
+                    
+                    if (opponentId) {
+                        try {
+                            await markGameWon(roomId, user.id, opponentId);
+                            
+                            const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
+                            const statsSnap = await getDoc(statsRef);
+                            const currentStats = statsSnap.exists() ? statsSnap.data() : { wins: 0, losses: 0 };
+                            
+                            await setDoc(statsRef, {
+                                wins: currentStats.wins + 1,
+                                losses: currentStats.losses
+                            });
+                            
+                            router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
+                        } catch (error) {
+                            console.error('Error al finalizar la partida:', error);
+                        }
+                    }
+                } else {
+                    router.push(`/end?win=true&word=${word}&gameField=${JSON.stringify(rows)}`);
+                }
             } else if (curRow + 1 >= rows.length) {
+                if (isMultiplayer && roomId && user && room) {
+                    const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
+                    if (opponentId) {
+                        const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
+                        const statsSnap = await getDoc(statsRef);
+                        const currentStats = statsSnap.exists() ? statsSnap.data() : { wins: 0, losses: 0 };
+                        
+                        await setDoc(statsRef, {
+                            wins: currentStats.wins,
+                            losses: currentStats.losses + 1
+                        });
+                    }
+                }
                 router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
             }
         }, 1000);
+        
         setCurRow((row) => row + 1);
         setCurCol(0);
     };
 
     const addKey = (key: string) => {
-        console.log('addKey', key);
-
         const newRows = [...rows.map((row) => [...row])];
 
         if (key === 'ENTER') {
@@ -160,13 +270,13 @@ const game = () => {
     const addWord = (word: string) => {
         const letters = word.split('');
         const newRows = [...rows.map((row) => [...row])];
-        
+
         letters.forEach((letter, index) => {
             if (index < 5) {
                 newRows[curRow][index] = letter;
             }
         });
-        
+
         setRows(newRows);
         setCurCol(Math.min(letters.length, 5));
     };

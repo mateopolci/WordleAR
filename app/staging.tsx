@@ -1,17 +1,12 @@
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from '@/assets/images/wordlear-icon.svg';
-import {Link, useRouter} from 'expo-router';
+import {Link} from 'expo-router';
 import ThemedText from '@/components/ThemedText';
 import ThemedButton from '@/components/ThemedButton';
-import {useAuth, useUser} from '@clerk/clerk-expo';
 import {useRef} from 'react';
 
 const online = () => {
     const buttonRef = useRef<TouchableOpacity>(null);
-
-    const {signOut} = useAuth();
-    const {user} = useUser();
-    const router = useRouter();
 
     return (
         <View style={styles.container}>
@@ -25,10 +20,10 @@ const online = () => {
             </View>
 
             <View style={styles.menu}>
-                <Link href={'/game'} asChild>
+                <Link href={'/create-room'} asChild>
                     <ThemedButton ref={buttonRef} title="Crear sala" style={styles.btn}></ThemedButton>
                 </Link>
-                <Link href={'/game'} asChild>
+                <Link href={'/join-room'} asChild>
                     <ThemedButton ref={buttonRef} title="Unirse a sala" style={styles.btn}></ThemedButton>
                 </Link>
             </View>
