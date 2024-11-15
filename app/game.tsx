@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, useColorScheme, Platform} from 'react-native';
+import {StyleSheet, Text, View, useColorScheme, Platform, TouchableOpacity, Alert} from 'react-native';
 import {useRef, useState, useEffect} from 'react';
 import Colors from '@/constants/Colors';
 import {Link, Stack, useRouter} from 'expo-router';
@@ -61,11 +61,10 @@ const game = () => {
         }
     }, [isMultiplayer, roomId]);
 
-    
     useEffect(() => {
         if (user) {
             fetchUserScore();
-            
+
             const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
             unsubscribeRef.current = onSnapshot(docRef, (doc) => {
                 if (doc.exists()) {
@@ -73,38 +72,38 @@ const game = () => {
                 }
             });
         }
-        
+
         return () => {
             if (unsubscribeRef.current) {
                 unsubscribeRef.current();
             }
         };
     }, [user]);
-    
+
     const fetchUserScore = async () => {
         if (!user) return;
         const docRef = doc(FIRESTORE_DB, `highscores/${user.id}`);
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
             setUserScore(docSnap.data());
         }
     };
-    
+
     const colorScheme = useColorScheme();
     const backgroundColor = Colors[colorScheme ?? 'light'].gameBg;
     const textColor = Colors[colorScheme ?? 'light'].text;
     const grayColor = Colors[colorScheme ?? 'light'].gray;
     const router = useRouter();
-    
+
     const [rows, setRows] = useState<string[][]>(new Array(ROWS).fill(new Array(5).fill('')));
     const [curRow, setCurRow] = useState(0);
     const [curCol, _setCurCol] = useState(0);
-    
+
     const [blueLetters, setBlueLetters] = useState<string[]>([]);
     const [yellowLetters, setYellowLetters] = useState<string[]>([]);
     const [grayLetters, setGrayLetters] = useState<string[]>([]);
-    
+
     const [word, setWord] = useState<string>('');
     useEffect(() => {
         if (isMultiplayer) {
@@ -115,15 +114,15 @@ const game = () => {
             setWord(words[Math.floor(Math.random() * words.length)]);
         }
     }, [isMultiplayer, room]);
-    
+
     const wordLetters = word.split('');
-    
+
     const colStateRef = useRef(curCol);
     const setCurCol = (col: number) => {
         colStateRef.current = col;
         _setCurCol(col);
     };
-    
+
     useEffect(() => {
         if (isMultiplayer && roomId && user && curRow > 0) {
             updateGameState(roomId, user.id, rows);
@@ -134,36 +133,36 @@ const game = () => {
         if (isMultiplayer && roomId && user) {
             const unsubscribe = subscribeToRoom(roomId, (roomData) => {
                 setRoom(roomData);
-                
-                if (roomData.gameState) {
-                    const opponentId = roomData.guestId === user.id ? roomData.hostId : roomData.guestId;
-                    const opponentGameState = roomData.gameState[opponentId];
-                    
-                    if (!opponentGameState) return;
-                }
-                   
+    
                 if (roomData.status === 'finished') {
-                    if (roomData.loserId === user.id) {
-                        const updateStats = async () => {
-                            const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
-                            const statsSnap = await getDoc(statsRef);
-                            const currentStats = statsSnap.exists() ? statsSnap.data() : { wins: 0, losses: 0 };
-                            
+                    // Handle both winner and loser
+                    const updateStats = async () => {
+                        const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
+                        const statsSnap = await getDoc(statsRef);
+                        const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
+    
+                        if (roomData.loserId === user.id) {
                             await setDoc(statsRef, {
                                 wins: currentStats.wins,
-                                losses: currentStats.losses + 1
+                                losses: currentStats.losses + 1,
                             });
-                        };
-                        
-                        updateStats();
-                        router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
-                    }
+                        } else {
+                            await setDoc(statsRef, {
+                                wins: currentStats.wins + 1,
+                                losses: currentStats.losses,
+                            });
+                        }
+                    };
+    
+                    updateStats();
+                    router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
                 }
             });
     
             return () => unsubscribe();
         }
     }, [isMultiplayer, roomId, user]);
+
     const checkWord = async () => {
         const currentWord = rows[curRow].join('');
         if (currentWord.length < word.length) {
@@ -174,13 +173,13 @@ const game = () => {
             shakeRow();
             return;
         }
-        
+
         flipRow();
-        
+
         const newBlue: string[] = [];
         const newYellow: string[] = [];
         const newGray: string[] = [];
-        
+
         currentWord.split('').forEach((letter, index) => {
             if (letter === wordLetters[index]) {
                 newBlue.push(letter);
@@ -193,25 +192,25 @@ const game = () => {
         setBlueLetters([...blueLetters, ...newBlue]);
         setYellowLetters([...yellowLetters, ...newYellow]);
         setGrayLetters([...grayLetters, ...newGray]);
-    
+
         setTimeout(async () => {
             if (currentWord === word) {
                 if (isMultiplayer && roomId && user && room) {
                     const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
-                    
+
                     if (opponentId) {
                         try {
                             await markGameWon(roomId, user.id, opponentId);
-                            
+
                             const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
                             const statsSnap = await getDoc(statsRef);
-                            const currentStats = statsSnap.exists() ? statsSnap.data() : { wins: 0, losses: 0 };
-                            
+                            const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
+
                             await setDoc(statsRef, {
                                 wins: currentStats.wins + 1,
-                                losses: currentStats.losses
+                                losses: currentStats.losses,
                             });
-                            
+
                             router.push(`/multiplayer-end?roomId=${roomId}&userId=${user.id}`);
                         } catch (error) {
                             console.error('Error al finalizar la partida:', error);
@@ -226,18 +225,18 @@ const game = () => {
                     if (opponentId) {
                         const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
                         const statsSnap = await getDoc(statsRef);
-                        const currentStats = statsSnap.exists() ? statsSnap.data() : { wins: 0, losses: 0 };
-                        
+                        const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
+
                         await setDoc(statsRef, {
                             wins: currentStats.wins,
-                            losses: currentStats.losses + 1
+                            losses: currentStats.losses + 1,
                         });
                     }
                 }
                 router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
             }
         }, 1000);
-        
+
         setCurRow((row) => row + 1);
         setCurCol(0);
     };
@@ -401,6 +400,46 @@ const game = () => {
         };
     }, [curCol]);
 
+    const handleForfeit = async () => {
+        if (isMultiplayer && roomId && user && room) {
+            Alert.alert('¿Rendirse?', '¿Estás seguro que querés rendirte? La partida contará como derrota.', [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Rendirse',
+                    style: 'destructive',
+                    onPress: async () => {
+                        const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
+    
+                        if (opponentId) {
+                            try {
+                                await markGameWon(roomId, opponentId, user.id);
+                                // Removemos la redirección de aquí ya que el useEffect se encargará de ello
+                                // cuando detecte el cambio de estado de la sala
+                                
+                                const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
+                                const statsSnap = await getDoc(statsRef);
+                                const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
+    
+                                await setDoc(statsRef, {
+                                    wins: currentStats.wins,
+                                    losses: currentStats.losses + 1,
+                                });
+                            } catch (error) {
+                                console.error('Error al abandonar la partida:', error);
+                                Alert.alert('Error', 'No se pudo abandonar la partida');
+                            }
+                        }
+                    },
+                },
+            ]);
+        } else {
+            router.back();
+        }
+    };
+
     return (
         <View style={[styles.container, {backgroundColor}]}>
             <Stack.Screen
@@ -413,6 +452,11 @@ const game = () => {
                             <Link href={'/howtoplay'}>
                                 <Ionicons name="help-circle-outline" size={28} color={textColor} />
                             </Link>
+                            {isMultiplayer && (
+                                <TouchableOpacity onPress={handleForfeit}>
+                                    <Ionicons name="exit-outline" size={28} color={textColor} />
+                                </TouchableOpacity>
+                            )}
                         </View>
                     ),
                     headerTitle: () => (
