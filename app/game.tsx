@@ -178,7 +178,7 @@ const game = () => {
             shakeRow();
             return;
         }
-        if (!allWords.includes(currentWord)) {
+        if (!allWords.includes(currentWord) && !allWords.includes(currentWord.toLowerCase())) {
             shakeRow();
             return;
         }
@@ -251,7 +251,6 @@ const game = () => {
     };
 
     const addKey = (key: string) => {
-        // Get current row from ref instead of directly
         const currentRow = curRowRef.current;
         const newRows = [...rows];
     
@@ -270,12 +269,10 @@ const game = () => {
         } else if (colStateRef.current >= newRows[currentRow].length) {
             return;
         } else {
-            // Add this check to ensure we're only writing to current row
             if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
                 return;
             }
             
-            // Create a new copy of the row to modify
             newRows[currentRow] = [...newRows[currentRow]];
             newRows[currentRow][colStateRef.current] = key;
             setRows(newRows);
@@ -285,26 +282,25 @@ const game = () => {
 
     const addWord = (word: string) => {
         const currentRow = curRowRef.current;
-        console.log('curRow al principio de addWord:', currentRow);
-        
-        const letters = word.split('');
-        const newRows = [...rows];
-        
-        if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
-            console.log('Fila actual llena o fuera de rango');
-            return;
-        }
-        
-        letters.forEach((letter, index) => {
-            if (index < 5) {
-                newRows[currentRow][index] = letter;
+
+        setRows(prevRows => {
+            const newRows = prevRows.map(row => [...row]);
+            
+            if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
+                return prevRows;
             }
+            
+            const letters = word.toUpperCase().split('');
+            letters.forEach((letter, index) => {
+                if (index < 5) {
+                    newRows[currentRow][index] = letter;
+                }
+            });
+            
+            return newRows;
         });
         
-        setRows(newRows);
-        setCurCol(Math.min(letters.length, 5));
-        
-        console.log('curRow al final de addWord:', currentRow);
+        setCurCol(Math.min(word.length, 5));
     };
 
     const handleHint = (hint: 'gray3' | 'gray5' | 'yellow1' | 'yellowAll', letters: string[]) => {
