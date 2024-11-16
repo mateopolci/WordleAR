@@ -503,7 +503,12 @@ const game = () => {
                 <OnScreenKeyboard onKeyPressed={addKey} onWordRecognized={addWord} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
             <SignedIn>
-                <View style={styles.hintsContainer}>{!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}</View>
+                <View style={styles.hintsContainer}>
+                    {!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}
+                    <View style={styles.opponentContainer}>
+                        <ThemedText style={styles.opponentName}>{room?.hostId === user?.id ? room?.guestFullName || 'Oponente' : room?.hostFullName || 'Oponente'}</ThemedText>
+                    </View>
+                </View>
             </SignedIn>
             <SignedOut>
                 <View style={styles.hintsContainer}></View>
@@ -559,5 +564,13 @@ const styles = StyleSheet.create({
     },
     coinCounter: {
         marginLeft: 5,
+    },
+    opponentContainer: {
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    opponentName: {
+        fontSize: 18,
+        fontFamily: 'FrankRuhlLibre_700Bold',
     },
 });

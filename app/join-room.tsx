@@ -22,7 +22,7 @@ export default function JoinRoom() {
         
         setIsJoining(true);
         try {
-            await joinRoom(roomId.toUpperCase(), user.id);
+            await joinRoom(roomId.toUpperCase(), user.id, user.fullName || '');
             router.push(`/game?mode=multiplayer&roomId=${roomId}`);
         } catch (error: any) {
             Alert.alert('Error', error.message);

@@ -31,10 +31,10 @@ export default function CreateRoom() {
 
     const handleCreateRoom = async () => {
         if (!user) return;
-
+    
         setIsCreating(true);
         try {
-            const newRoomId = await createRoom(user.id);
+            const newRoomId = await createRoom(user.id, user.fullName || '');
             setRoomId(newRoomId);
         } catch (error) {
             Alert.alert('Error', 'No se pudo crear la sala');
@@ -43,7 +43,6 @@ export default function CreateRoom() {
             setIsCreating(false);
         }
     };
-
     const handleShare = async () => {
         if (!roomId) return;
 
