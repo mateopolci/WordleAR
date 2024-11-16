@@ -48,7 +48,6 @@ export const words = [
   'bulto',
   'burro',
   'cabra',
-  'cabro',
   'cacho',
   'cagar',
   'calar',
