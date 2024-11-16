@@ -18,7 +18,6 @@ import {useLocalSearchParams} from 'expo-router';
 import {updateGameState, markGameWon, subscribeToRoom} from '@/services/multiplayerService';
 import {Room} from '@/types/Room';
 
-//Modificar a 1 para debug
 const ROWS = 6;
 
 const game = () => {
@@ -416,8 +415,6 @@ const game = () => {
                         if (opponentId) {
                             try {
                                 await markGameWon(roomId, opponentId, user.id);
-                                // Removemos la redirección de aquí ya que el useEffect se encargará de ello
-                                // cuando detecte el cambio de estado de la sala
 
                                 const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
                                 const statsSnap = await getDoc(statsRef);
@@ -446,9 +443,11 @@ const game = () => {
                 options={{
                     headerRight: () => (
                         <View style={styles.headerIcon}>
-                            <Link href={'/leaderboard'}>
-                                <Ionicons name="podium-outline" size={28} color={textColor} />
-                            </Link>
+                            {!isMultiplayer && (
+                                <Link href={'/leaderboard'}>
+                                    <Ionicons name="podium-outline" size={28} color={textColor} />
+                                </Link>
+                            )}
                             <Link href={'/howtoplay'}>
                                 <Ionicons name="help-circle-outline" size={28} color={textColor} />
                             </Link>
