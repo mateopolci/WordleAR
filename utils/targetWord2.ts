@@ -296,7 +296,6 @@ export const words = [
   'tropa',
   'tumba',
   'turro',
-  'upite',
   'usina',
   'uvita',
   'vaina',

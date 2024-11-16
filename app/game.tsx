@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View, useColorScheme, Platform, TouchableOpacity, Alert} from 'react-native';
 import {useRef, useState, useEffect} from 'react';
 import Colors from '@/constants/Colors';
-import {Link, Stack, useRouter} from 'expo-router';
+import {Link, Stack, usePathname, useRouter} from 'expo-router';
 import OnScreenKeyboard from '@/components/OnScreenKeyboard';
 import {Ionicons} from '@expo/vector-icons';
 import {allWords} from '@/utils/allWords';
@@ -443,7 +443,30 @@ const game = () => {
             }
         }
     };
+    const pathname = usePathname();
+    
+    const resetGameState = () => {
+        setRows(new Array(ROWS).fill(new Array(5).fill('')));
+        setCurRow(0);
+        setCurCol(0);
+        setBlueLetters([]);
+        setYellowLetters([]);
+        setGrayLetters([]);
+        for(let i = 0; i < ROWS; i++) {
+            for(let j = 0; j < 5; j++) {
+                cellBackgrounds[i][j].value = 'transparent';
+                cellBorders[i][j].value = Colors.light.gray;
+            }
+        }
+        if (!isMultiplayer) {
+            setWord(words[Math.floor(Math.random() * words.length)]);
+        }
+    };
 
+    useEffect(() => {
+        resetGameState();
+    }, [isMultiplayer, pathname]);
+    
     return (
         <View style={[styles.container, {backgroundColor}]}>
             <Stack.Screen
