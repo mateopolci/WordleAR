@@ -1,50 +1,54 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {router, useLocalSearchParams} from 'expo-router';
 import ThemedText from '@/components/ThemedText';
-import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { FIRESTORE_DB } from '@/utils/FirebaseConfig';
-import { Room } from '@/types/Room';
+import {useEffect, useState} from 'react';
+import {doc, getDoc, onSnapshot} from 'firebase/firestore';
+import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
+import {Room} from '@/types/Room';
 import ThemedButton from '@/components/ThemedButton';
-import { Ionicons } from '@expo/vector-icons';
+import {Ionicons} from '@expo/vector-icons';
 import Icon from '@/assets/images/wordlear-icon.svg';
-import Colors from '@/constants/Colors';
 
 export default function MultiplayerEnd() {
-    const { roomId, userId } = useLocalSearchParams<{roomId: string, userId: string}>();
+    const {roomId, userId} = useLocalSearchParams<{roomId: string; userId: string}>();
     const [stats, setStats] = useState({wins: 0, losses: 0});
     const [isWinner, setIsWinner] = useState<boolean | null>(null);
-    
+
     useEffect(() => {
         let isMounted = true;
 
         const fetchData = async () => {
             const roomRef = doc(FIRESTORE_DB, `rooms/${roomId}`);
             const roomSnap = await getDoc(roomRef);
-            
+
             if (roomSnap.exists() && isMounted) {
                 const roomData = roomSnap.data() as Room;
                 setIsWinner(roomData.winnerId === userId);
-                
+
+                // Crear listener para las estadísticas
                 const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${userId}`);
-                const statsSnap = await getDoc(statsRef);
-                if (statsSnap.exists() && isMounted) {
-                    setStats(statsSnap.data() as {wins: number, losses: number});
-                }
+                const unsubscribe = onSnapshot(statsRef, (doc) => {
+                    if (doc.exists() && isMounted) {
+                        setStats(doc.data() as {wins: number; losses: number});
+                    }
+                });
+
+                return () => {
+                    unsubscribe();
+                    isMounted = false;
+                };
             }
         };
-        
-        fetchData();
 
-        return () => {
-            isMounted = false;
-        };
-    }, []);
+        fetchData();
+    }, [roomId, userId]);
 
     if (isWinner === null) {
-        return <View style={styles.container}>
-            <ThemedText>Cargando resultado...</ThemedText>
-        </View>;
+        return (
+            <View style={styles.container}>
+                <ThemedText>Cargando resultado...</ThemedText>
+            </View>
+        );
     }
 
     const navigateRoot = () => {
@@ -54,13 +58,10 @@ export default function MultiplayerEnd() {
 
     return (
         <View style={styles.container}>
-
             <View style={styles.header}>
                 {isWinner ? <Ionicons name="star" size={60} color="#FFE44D" /> : <Icon width={100} height={70} />}
 
-                <ThemedText style={styles.title}>
-                    {isWinner ? '¡Ganaste la partida!' : 'Hoy no fue, la próxima es tuya.'}
-                </ThemedText>
+                <ThemedText style={styles.title}>{isWinner ? '¡Ganaste la partida!' : 'Hoy no fue, la próxima es tuya.'}</ThemedText>
 
                 <ThemedText style={styles.text}>Estadísticas multijugador</ThemedText>
                 <View style={styles.stats}>
@@ -82,11 +83,7 @@ export default function MultiplayerEnd() {
                     }}
                 />
 
-                <ThemedButton 
-                    title="Volver al menú" 
-                    onPress={() => router.push('/')} 
-                    style={styles.btn}
-                />
+                <ThemedButton title="Volver al menú" onPress={() => router.push('/')} style={styles.btn} />
             </View>
         </View>
     );
@@ -131,5 +128,5 @@ const styles = StyleSheet.create({
         fontSize: 26,
         fontFamily: 'bold',
         textAlign: 'center',
-    }
+    },
 });
