@@ -202,6 +202,7 @@ export default function RootLayout() {
                             <Stack.Screen
                                 name="multiplayer-end"
                                 options={{
+                                    headerShown: false,
                                     title: 'Fin de la partida',
                                     headerBackTitle: '',
                                     headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',

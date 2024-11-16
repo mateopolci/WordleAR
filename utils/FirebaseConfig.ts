@@ -1,7 +1,6 @@
 import {initializeApp} from 'firebase/app';
 import {getFirestore} from 'firebase/firestore';
 
-// Initialize Firebase
 const firebaseConfig = {
     apiKey: 'AIzaSyDHOIScGSqARs5Ns9YIqxBXKY2TdQX0VKs',
     authDomain: 'wordlear-c9374.firebaseapp.com',

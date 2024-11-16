@@ -6,14 +6,15 @@ export interface Room {
     guestFullName?: string;
     status: 'waiting' | 'playing' | 'finished';
     createdAt: number;
+    gameStartedAt?: number;
     word: string;
     gameState?: {
-      [userId: string]: {
-        attempts: string[][];
-        lastUpdate: number;
-      }
+        [userId: string]: {
+            attempts: string[][];
+            lastUpdate: number;
+        };
     };
     winnerId?: string;
     loserId?: string;
     finishedAt?: number;
-  }
+}

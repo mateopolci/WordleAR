@@ -1,5 +1,5 @@
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
-import {doc, updateDoc, onSnapshot} from 'firebase/firestore';
+import {doc, updateDoc, onSnapshot, deleteDoc} from 'firebase/firestore';
 
 export interface GameState {
     attempts: string[][];
@@ -8,27 +8,23 @@ export interface GameState {
     loserId?: string;
 }
 
-export const updateGameState = async (roomId: string, userId: string, attempts: string[][]) => {
-    const roomRef = doc(FIRESTORE_DB, 'rooms', roomId);
-    
-    const gameState = {
-        attempts: attempts,
-        lastUpdate: Date.now()
-    };
-  
-    await updateDoc(roomRef, {
-        [`gameState.${userId}`]: gameState
-    });
-};
-
 export const markGameWon = async (roomId: string, winnerId: string, loserId: string) => {
     const roomRef = doc(FIRESTORE_DB, 'rooms', roomId);
+
     await updateDoc(roomRef, {
         status: 'finished',
         winnerId,
         loserId,
         finishedAt: Date.now(),
     });
+
+    setTimeout(async () => {
+        try {
+            await cleanupRoom(roomId);
+        } catch (error) {
+            console.error('Error cleaning up room:', error);
+        }
+    }, 10000);
 };
 
 export const subscribeToRoom = (roomId: string, callback: (room: any) => void) => {
@@ -38,4 +34,9 @@ export const subscribeToRoom = (roomId: string, callback: (room: any) => void) =
             callback(snapshot.data());
         }
     });
+};
+
+export const cleanupRoom = async (roomId: string) => {
+    const roomRef = doc(FIRESTORE_DB, 'rooms', roomId);
+    await deleteDoc(roomRef);
 };

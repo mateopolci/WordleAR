@@ -13,7 +13,6 @@ const ThemedButton = forwardRef<TouchableOpacity, ThemedButtonProps>(
     const backgroundColor = Colors[colorScheme ?? 'light'].buttonBg;
     const textColor = Colors[colorScheme ?? 'light'].buttonText;
 
-    // Modificar los children para aplicar estilos al texto
     const modifiedChildren = React.Children.map(children, (child) => {
       if (isValidElement(child)) {
         return cloneElement(child, {

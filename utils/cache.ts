@@ -25,5 +25,4 @@ const createTokenCache = (): TokenCache => {
   };
 };
 
-// Solo se crea el cache si no estamos en web
 export const tokenCache = Platform.OS !== 'web' ? createTokenCache() : undefined;

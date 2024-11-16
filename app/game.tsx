@@ -11,12 +11,13 @@ import Coin from '@/assets/images/coin.svg';
 import ThemedText from '@/components/ThemedText';
 import {SignedIn, SignedOut} from '@clerk/clerk-expo';
 import {useUser} from '@clerk/clerk-expo';
-import {doc, getDoc, onSnapshot, setDoc} from 'firebase/firestore';
+import {doc, getDoc, onSnapshot, setDoc, deleteDoc} from 'firebase/firestore';
 import {FIRESTORE_DB} from '@/utils/FirebaseConfig';
 import Animated, {FadeIn, Layout, useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming} from 'react-native-reanimated';
 import {useLocalSearchParams} from 'expo-router';
-import {updateGameState, markGameWon, subscribeToRoom} from '@/services/multiplayerService';
+import {markGameWon, subscribeToRoom} from '@/services/multiplayerService';
 import {Room} from '@/types/Room';
+import GameTimer from '@/components/GameTimer';
 
 const ROWS = 6;
 
@@ -123,18 +124,11 @@ const game = () => {
     };
 
     useEffect(() => {
-        if (isMultiplayer && roomId && user && curRow > 0) {
-            updateGameState(roomId, user.id, rows);
-        }
-    }, [curRow]);
-
-    useEffect(() => {
         if (isMultiplayer && roomId && user) {
             const unsubscribe = subscribeToRoom(roomId, (roomData) => {
                 setRoom(roomData);
 
                 if (roomData.status === 'finished') {
-                    // Handle both winner and loser
                     const updateStats = async () => {
                         const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
                         const statsSnap = await getDoc(statsRef);
@@ -437,28 +431,34 @@ const game = () => {
         }
     };
 
+    const handleTimeExpired = async () => {
+        if (isMultiplayer && roomId) {
+            try {
+                const roomRef = doc(FIRESTORE_DB, `rooms/${roomId}`);
+                await deleteDoc(roomRef);
+
+                router.push('/');
+            } catch (error) {
+                console.error('Error cleaning up expired game:', error);
+            }
+        }
+    };
+
     return (
         <View style={[styles.container, {backgroundColor}]}>
             <Stack.Screen
                 options={{
                     headerBackVisible: false,
-                    headerLeft: () => (
+                    headerLeft: () =>
                         isMultiplayer ? (
-                            <TouchableOpacity 
-                                onPress={handleForfeit}
-                                style={styles.headerIcon}
-                            >
+                            <TouchableOpacity onPress={handleForfeit} style={styles.headerIcon}>
                                 <Ionicons name="close-outline" size={28} color={textColor} />
                             </TouchableOpacity>
                         ) : (
-                            <TouchableOpacity 
-                                onPress={() => router.back()}
-                                style={styles.headerIcon}
-                            >
+                            <TouchableOpacity onPress={() => router.back()} style={styles.headerIcon}>
                                 <Ionicons name="close-outline" size={28} color={textColor} />
                             </TouchableOpacity>
-                        )
-                    ),
+                        ),
                     headerRight: () => (
                         <View style={styles.headerIcon}>
                             {!isMultiplayer && (
@@ -471,18 +471,29 @@ const game = () => {
                             </Link>
                         </View>
                     ),
-                    headerTitle: () => (
-                        <View>
-                            <SignedIn>
+                    headerTitle: () =>
+                        isMultiplayer ? (
+                            <View>
                                 {!isMultiplayer && (
                                     <View style={styles.headerTitleContainerSignedIn}>
                                         <Coin width={18} height={18} />
                                         <ThemedText style={styles.coinCounter}>{userScore?.coins ?? 0}</ThemedText>
                                     </View>
                                 )}
-                            </SignedIn>
-                        </View>
-                    ),
+                                {room?.gameStartedAt ? <GameTimer startTime={room.gameStartedAt} onTimeExpired={handleTimeExpired} /> : <ThemedText>Esperando...</ThemedText>}
+                            </View>
+                        ) : (
+                            <View>
+                                <SignedIn>
+                                    {!isMultiplayer && (
+                                        <View style={styles.headerTitleContainerSignedIn}>
+                                            <Coin width={18} height={18} />
+                                            <ThemedText style={styles.coinCounter}>{userScore?.coins ?? 0}</ThemedText>
+                                        </View>
+                                    )}
+                                </SignedIn>
+                            </View>
+                        ),
                 }}
             />
 
@@ -527,7 +538,7 @@ const game = () => {
                     </View>
                 )}
             </View>
-            
+
             <SignedOut>
                 <View style={styles.hintsContainer}></View>
             </SignedOut>

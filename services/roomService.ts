@@ -22,7 +22,6 @@ export const createRoom = async (userId: string, fullName?: string): Promise<str
         }
     } catch (error) {
         console.error('Error fetching Clerk user:', error);
-        // Use el fullName pasado como parámetro si la API falla
     }
     
     const randomWord = words[Math.floor(Math.random() * words.length)];
@@ -63,7 +62,8 @@ export const joinRoom = async (roomId: string, userId: string, userFullName: str
         ...room,
         guestId: userId,
         guestFullName: userFullName,
-        status: 'playing'
+        status: 'playing',
+        gameStartedAt: Date.now()
     };
 
     await setDoc(roomRef, updatedRoom);
