@@ -173,37 +173,44 @@ const game = () => {
     }, [isMultiplayer, roomId, user]);
 
     const checkWord = async () => {
-        const currentWord = rows[curRow].join('');
+        const currentWord = rows[curRow].join('').toUpperCase(); // Normalizar a mayúsculas el input
+        const targetWord = word.toUpperCase(); // Normalizar a mayúsculas la palabra objetivo
+        
         if (currentWord.length < word.length) {
             shakeRow();
             return;
         }
-        if (!allWords.includes(currentWord) && !allWords.includes(currentWord.toLowerCase())) {
+    
+        if (!allWords.includes(currentWord.toLowerCase()) && !allWords.includes(currentWord)) {
             shakeRow();
             return;
         }
-
+    
         flipRow();
-
+    
         const newBlue: string[] = [];
         const newYellow: string[] = [];
         const newGray: string[] = [];
-
-        currentWord.split('').forEach((letter, index) => {
-            if (letter === wordLetters[index]) {
+    
+        const letters = currentWord.split('');
+        const targetLetters = targetWord.split('');
+    
+        letters.forEach((letter, index) => {
+            if (letter === targetLetters[index]) {
                 newBlue.push(letter);
-            } else if (wordLetters.includes(letter)) {
+            } else if (targetLetters.includes(letter)) {
                 newYellow.push(letter);
             } else {
                 newGray.push(letter);
             }
         });
+    
         setBlueLetters([...blueLetters, ...newBlue]);
         setYellowLetters([...yellowLetters, ...newYellow]);
         setGrayLetters([...grayLetters, ...newGray]);
 
         setTimeout(async () => {
-            if (currentWord === word) {
+            if (currentWord === word.toUpperCase()) {
                 if (isMultiplayer && roomId && user && room) {
                     const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
 
@@ -282,7 +289,7 @@ const game = () => {
 
     const addWord = (word: string) => {
         const currentRow = curRowRef.current;
-
+        
         setRows(prevRows => {
             const newRows = prevRows.map(row => [...row]);
             
@@ -291,12 +298,14 @@ const game = () => {
             }
             
             const letters = word.toUpperCase().split('');
+            
             letters.forEach((letter, index) => {
                 if (index < 5) {
                     newRows[currentRow][index] = letter;
                 }
             });
             
+            console.log('New rows state:', newRows);
             return newRows;
         });
         
@@ -368,9 +377,12 @@ const game = () => {
 
     const setCellColor = (cell: string, rowIndex: number, cellIndex: number) => {
         if (curRow > rowIndex) {
-            if (wordLetters[cellIndex] === cell) {
+            const normalizedCell = cell.toUpperCase();
+            const normalizedWordLetters = wordLetters.map(l => l.toUpperCase());
+            
+            if (normalizedWordLetters[cellIndex] === normalizedCell) {
                 cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#6ABDED'));
-            } else if (wordLetters.includes(cell)) {
+            } else if (normalizedWordLetters.includes(normalizedCell)) {
                 cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#FFE44D'));
             } else {
                 cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming(grayColor));
