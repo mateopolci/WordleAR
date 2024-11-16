@@ -455,7 +455,7 @@ const game = () => {
                                 <Ionicons name="close-outline" size={28} color={textColor} />
                             </TouchableOpacity>
                         ) : (
-                            <TouchableOpacity onPress={() => router.back()} style={styles.headerIcon}>
+                            <TouchableOpacity onPress={() => router.replace('/')} style={styles.headerIcon}>
                                 <Ionicons name="close-outline" size={28} color={textColor} />
                             </TouchableOpacity>
                         ),

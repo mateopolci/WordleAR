@@ -124,7 +124,7 @@ const end = () => {
                 </SignedOut>
 
                 <SignedIn>
-                    <ThemedText style={styles.text}>Resumen de tus logros</ThemedText>
+                    <ThemedText style={styles.text}>Estadísticas individuales</ThemedText>
                     <View style={styles.stats}>
                         <View>
                             <ThemedText style={styles.score}>{userScore?.played}</ThemedText>
