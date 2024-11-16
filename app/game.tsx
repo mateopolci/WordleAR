@@ -96,13 +96,29 @@ const game = () => {
     const grayColor = Colors[colorScheme ?? 'light'].gray;
     const router = useRouter();
 
-    const [rows, setRows] = useState<string[][]>(new Array(ROWS).fill(new Array(5).fill('')));
-    const [curRow, setCurRow] = useState(0);
+    const [rows, setRows] = useState<string[][]>(
+        Array(ROWS)
+            .fill(null)
+            .map(() => Array(5).fill(''))
+    );
+
+    const [curRow, _setCurRow] = useState(0);
+    const setCurRow = (row: number) => {
+        curRowRef.current = row;
+        _setCurRow(row);
+    };
+    
+    useEffect(() => {
+        console.log('curRow cambió a:', curRow);
+    }, [curRow]);
+
     const [curCol, _setCurCol] = useState(0);
 
     const [blueLetters, setBlueLetters] = useState<string[]>([]);
     const [yellowLetters, setYellowLetters] = useState<string[]>([]);
     const [grayLetters, setGrayLetters] = useState<string[]>([]);
+
+    const curRowRef = useRef(0);
 
     const [word, setWord] = useState<string>('');
     useEffect(() => {
@@ -230,47 +246,61 @@ const game = () => {
             }
         }, 1000);
 
-        setCurRow((row) => row + 1);
+        setCurRow(curRow + 1);
         setCurCol(0);
     };
 
     const addKey = (key: string) => {
-        const newRows = [...rows.map((row) => [...row])];
-
+        const currentRow = curRowRef.current;
+        const newRows = [...rows];
+    
         if (key === 'ENTER') {
             checkWord();
         } else if (key === 'BACKSPACE') {
             if (colStateRef.current === 0) {
-                newRows[curRow][0] = '';
+                newRows[currentRow][0] = '';
                 setRows(newRows);
                 return;
             }
-            newRows[curRow][colStateRef.current - 1] = '';
+            newRows[currentRow][colStateRef.current - 1] = '';
             setCurCol(colStateRef.current - 1);
             setRows(newRows);
             return;
-        } else if (colStateRef.current >= newRows[curRow].length) {
-            //End of line
+        } else if (colStateRef.current >= newRows[currentRow].length) {
+            // End of line
             return;
         } else {
-            newRows[curRow][colStateRef.current] = key;
+            if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
+                return;
+            }
+            newRows[currentRow][colStateRef.current] = key;
             setRows(newRows);
             setCurCol(colStateRef.current + 1);
         }
     };
 
     const addWord = (word: string) => {
+        const currentRow = curRowRef.current;
+        console.log('curRow al principio de addWord:', currentRow);
+        
         const letters = word.split('');
-        const newRows = [...rows.map((row) => [...row])];
-
+        const newRows = [...rows];
+        
+        if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
+            console.log('Fila actual llena o fuera de rango');
+            return;
+        }
+        
         letters.forEach((letter, index) => {
             if (index < 5) {
-                newRows[curRow][index] = letter;
+                newRows[currentRow][index] = letter;
             }
         });
-
+        
         setRows(newRows);
         setCurCol(Math.min(letters.length, 5));
+        
+        console.log('curRow al final de addWord:', currentRow);
     };
 
     const handleHint = (hint: 'gray3' | 'gray5' | 'yellow1' | 'yellowAll', letters: string[]) => {
@@ -444,7 +474,7 @@ const game = () => {
         }
     };
     const pathname = usePathname();
-    
+
     const resetGameState = () => {
         setRows(new Array(ROWS).fill(new Array(5).fill('')));
         setCurRow(0);
@@ -452,8 +482,8 @@ const game = () => {
         setBlueLetters([]);
         setYellowLetters([]);
         setGrayLetters([]);
-        for(let i = 0; i < ROWS; i++) {
-            for(let j = 0; j < 5; j++) {
+        for (let i = 0; i < ROWS; i++) {
+            for (let j = 0; j < 5; j++) {
                 cellBackgrounds[i][j].value = 'transparent';
                 cellBorders[i][j].value = Colors.light.gray;
             }
@@ -466,7 +496,7 @@ const game = () => {
     useEffect(() => {
         resetGameState();
     }, [isMultiplayer, pathname]);
-    
+
     return (
         <View style={[styles.container, {backgroundColor}]}>
             <Stack.Screen
