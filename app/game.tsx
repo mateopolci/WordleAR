@@ -251,6 +251,7 @@ const game = () => {
     };
 
     const addKey = (key: string) => {
+        // Get current row from ref instead of directly
         const currentRow = curRowRef.current;
         const newRows = [...rows];
     
@@ -267,12 +268,15 @@ const game = () => {
             setRows(newRows);
             return;
         } else if (colStateRef.current >= newRows[currentRow].length) {
-            // End of line
             return;
         } else {
+            // Add this check to ensure we're only writing to current row
             if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
                 return;
             }
+            
+            // Create a new copy of the row to modify
+            newRows[currentRow] = [...newRows[currentRow]];
             newRows[currentRow][colStateRef.current] = key;
             setRows(newRows);
             setCurCol(colStateRef.current + 1);
