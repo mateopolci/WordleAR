@@ -54,14 +54,6 @@ export default function MultiplayerEnd() {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
-                onPress={navigateRoot}
-                style={{
-                    alignSelf: 'flex-end',
-                }}
-            >
-                <Ionicons name="close" size={30} color={Colors.light.gray} />
-            </TouchableOpacity>
 
             <View style={styles.header}>
                 {isWinner ? <Ionicons name="star" size={60} color="#FFE44D" /> : <Icon width={100} height={70} />}
@@ -104,7 +96,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 40,
-        paddingVertical: 10,
+        paddingVertical: 80,
     },
     header: {
         alignItems: 'center',

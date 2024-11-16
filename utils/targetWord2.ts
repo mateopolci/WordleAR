@@ -1,6 +1,5 @@
 export const words = [
   'acera',
-  'adobe',
   'afane',
   'afano',
   'afile',
