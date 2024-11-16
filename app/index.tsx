@@ -35,7 +35,7 @@ export default function Index() {
                     Wordle
                     <Text style={styles.titleHighlight}>AR</Text>
                 </ThemedText>
-                <ThemedText style={styles.text}>Descubre la palabra en 6 intentos o menos</ThemedText>
+                <ThemedText style={styles.text}>Descubre la palabra en 6 intentos</ThemedText>
             </View>
 
             <View style={styles.menu}>

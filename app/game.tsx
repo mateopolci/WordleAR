@@ -502,14 +502,15 @@ const game = () => {
             <View style={styles.keyboardContainer}>
                 <OnScreenKeyboard onKeyPressed={addKey} onWordRecognized={addWord} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
-            <SignedIn>
-                <View style={styles.hintsContainer}>
-                    {!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}
-                    <View style={styles.opponentContainer}>
-                        <ThemedText style={styles.opponentName}>{room?.hostId === user?.id ? room?.guestFullName || 'Oponente' : room?.hostFullName || 'Oponente'}</ThemedText>
-                    </View>
+
+            <View style={styles.hintsContainer}>
+                {!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}
+                <View style={styles.opponentContainer}>
+                    <ThemedText style={[styles.opponentName, {fontSize: 22, marginBottom: 15}]}>Jugando contra: {room?.hostId === user?.id ? room?.guestFullName || 'Oponente' : room?.hostFullName || 'Oponente'}</ThemedText>
+                    <ThemedText style={[styles.opponentName, {fontStyle: 'italic', fontSize: 14}]}>Las ayudas están desactivadas en partidas multijugador</ThemedText>
                 </View>
-            </SignedIn>
+            </View>
+
             <SignedOut>
                 <View style={styles.hintsContainer}></View>
             </SignedOut>
@@ -567,10 +568,12 @@ const styles = StyleSheet.create({
     },
     opponentContainer: {
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingTop: 40,
     },
     opponentName: {
-        fontSize: 18,
-        fontFamily: 'FrankRuhlLibre_700Bold',
+        fontSize: 16,
+        textAlign: 'center',
+        fontFamily: 'FrankRuhlLibre_500Medium',
+        paddingHorizontal: 20,
     },
 });
