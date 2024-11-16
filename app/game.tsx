@@ -441,6 +441,24 @@ const game = () => {
         <View style={[styles.container, {backgroundColor}]}>
             <Stack.Screen
                 options={{
+                    headerBackVisible: false,
+                    headerLeft: () => (
+                        isMultiplayer ? (
+                            <TouchableOpacity 
+                                onPress={handleForfeit}
+                                style={styles.headerIcon}
+                            >
+                                <Ionicons name="close-outline" size={28} color={textColor} />
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity 
+                                onPress={() => router.back()}
+                                style={styles.headerIcon}
+                            >
+                                <Ionicons name="close-outline" size={28} color={textColor} />
+                            </TouchableOpacity>
+                        )
+                    ),
                     headerRight: () => (
                         <View style={styles.headerIcon}>
                             {!isMultiplayer && (
@@ -451,11 +469,6 @@ const game = () => {
                             <Link href={'/howtoplay'}>
                                 <Ionicons name="help-circle-outline" size={28} color={textColor} />
                             </Link>
-                            {isMultiplayer && (
-                                <TouchableOpacity onPress={handleForfeit}>
-                                    <Ionicons name="exit-outline" size={28} color={textColor} />
-                                </TouchableOpacity>
-                            )}
                         </View>
                     ),
                     headerTitle: () => (
