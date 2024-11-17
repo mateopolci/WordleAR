@@ -107,7 +107,7 @@ const game = () => {
         curRowRef.current = row;
         _setCurRow(row);
     };
-    
+
     useEffect(() => {
         console.log('curRow cambió a:', curRow);
     }, [curRow]);
@@ -175,26 +175,26 @@ const game = () => {
     const checkWord = async () => {
         const currentWord = rows[curRow].join('').toUpperCase(); // Normalizar a mayúsculas el input
         const targetWord = word.toUpperCase(); // Normalizar a mayúsculas la palabra objetivo
-        
+
         if (currentWord.length < word.length) {
             shakeRow();
             return;
         }
-    
+
         if (!allWords.includes(currentWord.toLowerCase()) && !allWords.includes(currentWord)) {
             shakeRow();
             return;
         }
-    
+
         flipRow();
-    
+
         const newBlue: string[] = [];
         const newYellow: string[] = [];
         const newGray: string[] = [];
-    
+
         const letters = currentWord.split('');
         const targetLetters = targetWord.split('');
-    
+
         letters.forEach((letter, index) => {
             if (letter === targetLetters[index]) {
                 newBlue.push(letter);
@@ -204,7 +204,7 @@ const game = () => {
                 newGray.push(letter);
             }
         });
-    
+
         setBlueLetters([...blueLetters, ...newBlue]);
         setYellowLetters([...yellowLetters, ...newYellow]);
         setGrayLetters([...grayLetters, ...newGray]);
@@ -260,7 +260,7 @@ const game = () => {
     const addKey = (key: string) => {
         const currentRow = curRowRef.current;
         const newRows = [...rows];
-    
+
         if (key === 'ENTER') {
             checkWord();
         } else if (key === 'BACKSPACE') {
@@ -279,7 +279,7 @@ const game = () => {
             if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
                 return;
             }
-            
+
             newRows[currentRow] = [...newRows[currentRow]];
             newRows[currentRow][colStateRef.current] = key;
             setRows(newRows);
@@ -289,26 +289,26 @@ const game = () => {
 
     const addWord = (word: string) => {
         const currentRow = curRowRef.current;
-        
-        setRows(prevRows => {
-            const newRows = prevRows.map(row => [...row]);
-            
+
+        setRows((prevRows) => {
+            const newRows = prevRows.map((row) => [...row]);
+
             if (currentRow >= ROWS || newRows[currentRow].join('').length === 5) {
                 return prevRows;
             }
-            
+
             const letters = word.toUpperCase().split('');
-            
+
             letters.forEach((letter, index) => {
                 if (index < 5) {
                     newRows[currentRow][index] = letter;
                 }
             });
-            
+
             console.log('New rows state:', newRows);
             return newRows;
         });
-        
+
         setCurCol(Math.min(word.length, 5));
     };
 
@@ -378,8 +378,8 @@ const game = () => {
     const setCellColor = (cell: string, rowIndex: number, cellIndex: number) => {
         if (curRow > rowIndex) {
             const normalizedCell = cell.toUpperCase();
-            const normalizedWordLetters = wordLetters.map(l => l.toUpperCase());
-            
+            const normalizedWordLetters = wordLetters.map((l) => l.toUpperCase());
+
             if (normalizedWordLetters[cellIndex] === normalizedCell) {
                 cellBackgrounds[rowIndex][cellIndex].value = withDelay(cellIndex * 200, withTiming('#6ABDED'));
             } else if (normalizedWordLetters.includes(normalizedCell)) {
@@ -591,18 +591,20 @@ const game = () => {
             <View style={styles.keyboardContainer}>
                 <OnScreenKeyboard onKeyPressed={addKey} onWordRecognized={addWord} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
-
-            <View style={styles.hintsContainer}>
-                {!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}
-                {isMultiplayer && (
-                    <View style={styles.opponentContainer}>
-                        <ThemedText style={[styles.opponentName, {fontSize: 22, marginBottom: 15}]}>
-                            Jugando contra: {room?.hostId === user?.id ? room?.guestFullName || 'Oponente' : room?.hostFullName || 'Oponente'}
-                        </ThemedText>
-                        <ThemedText style={[styles.opponentName, {fontStyle: 'italic', fontSize: 14}]}>Las ayudas están desactivadas en partidas multijugador</ThemedText>
-                    </View>
-                )}
-            </View>
+            
+            <SignedIn>
+                <View style={styles.hintsContainer}>
+                    {!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}
+                    {isMultiplayer && (
+                        <View style={styles.opponentContainer}>
+                            <ThemedText style={[styles.opponentName, {fontSize: 22, marginBottom: 15}]}>
+                                Jugando contra: {room?.hostId === user?.id ? room?.guestFullName || 'Oponente' : room?.hostFullName || 'Oponente'}
+                            </ThemedText>
+                            <ThemedText style={[styles.opponentName, {fontStyle: 'italic', fontSize: 14}]}>Las ayudas están desactivadas en partidas multijugador</ThemedText>
+                        </View>
+                    )}
+                </View>
+            </SignedIn>
 
             <SignedOut>
                 <View style={styles.hintsContainer}></View>
