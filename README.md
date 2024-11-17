@@ -8,7 +8,7 @@
     npm install
     ```
 
-2. Instalar la aplicación Expo Go en el teléfono.
+2. El proyecto actual no permite el uso de expo go, para correr el mismo en modo desarrollo es necesario instalar la developer apk en el dispositivo android sobre el cual estemos probando.
 
 3. Iniciar el servidor local.
 
@@ -16,7 +16,7 @@
     npx expo start
     ```
 
-4. Escanear el código QR de la terminal cuando se inicie el servidor.
+4. Escanear el código QR de la terminal con el dispositivo cuando se inicie el servidor para abrir la apk en modo desarrollo.
 
 ## Capturas de pantalla
 
