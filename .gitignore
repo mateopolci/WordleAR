@@ -12,4 +12,4 @@ web-build/
 .DS_Store
 expo-env.d.ts
 .env
-/utils/FirebaseConfig.ts
+**/FirebaseConfig.ts
