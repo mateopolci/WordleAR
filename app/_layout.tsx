@@ -174,7 +174,7 @@ export default function RootLayout() {
                                 options={{
                                     headerBackTitle: 'Fin del juego',
                                     presentation: 'fullScreenModal',
-                                    headerShadowVisible: false,
+                                    headerShown: false,
                                     headerTintColor: colorScheme === 'light' ? '#000000' : '#FFFFFF',
                                     title: '',
                                     headerBackTitleStyle: {

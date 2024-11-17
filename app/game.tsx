@@ -173,8 +173,8 @@ const game = () => {
     }, [isMultiplayer, roomId, user]);
 
     const checkWord = async () => {
-        const currentWord = rows[curRow].join('').toUpperCase(); // Normalizar a mayúsculas el input
-        const targetWord = word.toUpperCase(); // Normalizar a mayúsculas la palabra objetivo
+        const currentWord = rows[curRow].join('').toUpperCase();
+        const targetWord = word.toUpperCase();
 
         if (currentWord.length < word.length) {
             shakeRow();
@@ -237,19 +237,10 @@ const game = () => {
                 }
             } else if (curRow + 1 >= rows.length) {
                 if (isMultiplayer && roomId && user && room) {
-                    const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
-                    if (opponentId) {
-                        const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
-                        const statsSnap = await getDoc(statsRef);
-                        const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
-
-                        await setDoc(statsRef, {
-                            wins: currentStats.wins,
-                            losses: currentStats.losses + 1,
-                        });
-                    }
+                    handleForfeit(true);
+                } else {
+                    router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
                 }
-                router.push(`/end?win=false&word=${word}&gameField=${JSON.stringify(rows)}`);
             }
         }, 1000);
 
@@ -435,39 +426,45 @@ const game = () => {
         };
     }, [curCol]);
 
-    const handleForfeit = async () => {
+    const handleForfeit = async (skipConfirmation?: boolean) => {
         if (isMultiplayer && roomId && user && room) {
-            Alert.alert('¿Rendirse?', '¿Estás seguro que querés rendirte? La partida contará como derrota.', [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Rendirse',
-                    style: 'destructive',
-                    onPress: async () => {
-                        const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
+            const executeForfeit = async () => {
+                const opponentId = room.guestId === user.id ? room.hostId : room.guestId;
 
-                        if (opponentId) {
-                            try {
-                                await markGameWon(roomId, opponentId, user.id);
+                if (opponentId) {
+                    try {
+                        await markGameWon(roomId, opponentId, user.id);
 
-                                const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
-                                const statsSnap = await getDoc(statsRef);
-                                const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
+                        const statsRef = doc(FIRESTORE_DB, `multiplayerStats/${user.id}`);
+                        const statsSnap = await getDoc(statsRef);
+                        const currentStats = statsSnap.exists() ? statsSnap.data() : {wins: 0, losses: 0};
 
-                                await setDoc(statsRef, {
-                                    wins: currentStats.wins,
-                                    losses: currentStats.losses + 1,
-                                });
-                            } catch (error) {
-                                console.error('Error al abandonar la partida:', error);
-                                Alert.alert('Error', 'No se pudo abandonar la partida');
-                            }
-                        }
+                        await setDoc(statsRef, {
+                            wins: currentStats.wins,
+                            losses: currentStats.losses + 1,
+                        });
+                    } catch (error) {
+                        console.error('Error al abandonar la partida:', error);
+                        Alert.alert('Error', 'No se pudo abandonar la partida');
+                    }
+                }
+            };
+
+            if (skipConfirmation) {
+                await executeForfeit();
+            } else {
+                Alert.alert('¿Rendirse?', '¿Estás seguro que querés rendirte? La partida contará como derrota.', [
+                    {
+                        text: 'Cancelar',
+                        style: 'cancel',
                     },
-                },
-            ]);
+                    {
+                        text: 'Rendirse',
+                        style: 'destructive',
+                        onPress: executeForfeit,
+                    },
+                ]);
+            }
         } else {
             router.back();
         }
@@ -516,7 +513,7 @@ const game = () => {
                     headerBackVisible: false,
                     headerLeft: () =>
                         isMultiplayer ? (
-                            <TouchableOpacity onPress={handleForfeit} style={styles.headerIcon}>
+                            <TouchableOpacity onPress={() => handleForfeit()} style={styles.headerIcon}>
                                 <Ionicons name="close-outline" size={28} color={textColor} />
                             </TouchableOpacity>
                         ) : (
@@ -524,20 +521,17 @@ const game = () => {
                                 <Ionicons name="close-outline" size={28} color={textColor} />
                             </TouchableOpacity>
                         ),
-                    headerRight: () => (
-                        <View style={styles.headerIcon}>
-                            {!isMultiplayer && (
+                    headerRight: () =>
+                        !isMultiplayer ? (
+                            <View style={styles.headerIcon}>
                                 <Link href={'/leaderboard'}>
                                     <Ionicons name="podium-outline" size={28} color={textColor} />
                                 </Link>
-                            )}
-                            <Link href={'/howtoplay'}>
-                                <Ionicons name="help-circle-outline" size={28} color={textColor} />
-                            </Link>
-                        </View>
-                    ),
-                    headerTitle: () =>
-                        isMultiplayer ? (
+                                <Link href={'/howtoplay'}>
+                                    <Ionicons name="help-circle-outline" size={28} color={textColor} />
+                                </Link>
+                            </View>
+                        ) : (
                             <View>
                                 {!isMultiplayer && (
                                     <View style={styles.headerTitleContainerSignedIn}>
@@ -547,6 +541,10 @@ const game = () => {
                                 )}
                                 {room?.gameStartedAt ? <GameTimer startTime={room.gameStartedAt} onTimeExpired={handleTimeExpired} /> : <ThemedText>Esperando...</ThemedText>}
                             </View>
+                        ),
+                    headerTitle: () =>
+                        isMultiplayer ? (
+                            <View></View>
                         ) : (
                             <View>
                                 <SignedIn>
@@ -591,7 +589,7 @@ const game = () => {
             <View style={styles.keyboardContainer}>
                 <OnScreenKeyboard onKeyPressed={addKey} onWordRecognized={addWord} blueLetters={blueLetters} yellowLetters={yellowLetters} grayLetters={grayLetters} />
             </View>
-            
+
             <SignedIn>
                 <View style={styles.hintsContainer}>
                     {!isMultiplayer && <Hints word={word} grayLetters={grayLetters} onHintUsed={handleHint} />}

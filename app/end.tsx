@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 40,
-        paddingVertical: 10,
+        paddingVertical: 60,
     },
     header: {
         alignItems: 'center',

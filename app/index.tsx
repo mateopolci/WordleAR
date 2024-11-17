@@ -60,7 +60,8 @@ export default function Index() {
             <View>
                 <SignedIn>
                     <View style={styles.header}>
-                        <ThemedText style={styles.footer}>Bienvenido, {user?.fullName}.</ThemedText>
+                        <ThemedText style={styles.footer}>Sesión inciada como</ThemedText>
+                        <ThemedText style={styles.footer}>{user?.fullName}.</ThemedText>
                     </View>
                 </SignedIn>
                 <SignedOut>
